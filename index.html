@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login with Google</title>
+</head>
+<body>
+    <h1>Login with Google Example</h1>
+    <button id="google-login-btn" style="padding: 10px 20px; font-size: 16px; background-color: #4285F4; color: white; border: none; border-radius: 5px; cursor: pointer;">
+        Войти через Google
+    </button>
+
+    <script>
+        const clientId = "YOUR_CLIENT_ID"; // Замените на ваш Google OAuth 2.0 Client ID
+        const redirectUri = "YOUR_REDIRECT_URI"; // Замените на URL вашего сервера для обработки ответа
+        const scope = "https://www.googleapis.com/auth/drive.readonly";
+
+        document.getElementById("google-login-btn").addEventListener("click", () => {
+            const authUrl = `https://accounts.google.com/o/oauth2/v2/auth` +
+                `?client_id=${clientId}` +
+                `&redirect_uri=${redirectUri}` +
+                `&response_type=code` +
+                `&scope=${encodeURIComponent(scope)}`;
+
+            // Перенаправляем пользователя на страницу авторизации Google
+            window.location.href = authUrl;
+        });
+    </script>
+</body>
+</html>
