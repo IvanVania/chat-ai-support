@@ -1,3 +1,159 @@
+
+
+
+
+
+
+class UserData {
+    constructor(client_id, name, email, profile_picture_url, subscription_status, subscription_name, data_document_url, client_data_ids, client_chats_ids) {
+        this.client_id = client_id;
+        this.name = name;
+        this.email = email;
+        this.profile_picture_url = profile_picture_url;
+        this.subscription_status = subscription_status;
+        this.subscription_name = subscription_name;
+        this.data_document_url = data_document_url;
+        this.client_data_ids = client_data_ids;
+        this.client_chats_ids = client_chats_ids;
+    }
+}
+
+let userData = null;  // Глобальная переменная
+
+window.onload = async function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const authorizationCode = urlParams.get('code');
+    const jwtToken = localStorage.getItem('jwtToken');
+
+    const payload = { code: authorizationCode || null };
+    const headers = { 'Content-Type': 'application/json' };
+
+    if (jwtToken) {
+        headers['Authorization'] = `Bearer ${jwtToken}`;
+    }
+
+    try {
+        const response = await fetch('https://r1h30g86v3.execute-api.us-east-2.amazonaws.com/default', {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(payload)
+        });
+
+        if (response.status === 401) {
+            localStorage.removeItem('jwtToken');
+            window.location.href = 'https://ivanvania.github.io/chat-ai-support/login';
+            return;
+        }
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (data.error) {
+            if (data.error === 'Authentication failed') {
+                window.location.href = 'https://ivanvania.github.io/chat-ai-support/login';
+            }
+        } else {
+            if (data.access_token) {
+                localStorage.setItem('jwtToken', data.access_token);
+            }
+
+            // ✅ Теперь сохраняем `userData` в глобальную переменную
+            userData = new UserData(
+                data.user.client_id,
+                data.user.name,
+                data.user.email,
+                data.user.profile_picture_url,
+                data.user.subscription_status,
+                data.user.subscription_name,
+                data.user.data_document_url,
+                data.user.client_data_ids,
+                data.user.client_chats_ids
+            );
+
+            updateUI();
+        }
+    } catch (error) {
+        console.error('Error executing request:', error);
+        localStorage.removeItem('jwtToken');
+        window.location.href = 'https://ivanvania.github.io/chat-ai-support/login';
+    }
+};
+
+// ✅ Теперь updateUI использует глобальную `userData`
+function updateUI() {
+    if (!userData) return;
+
+    document.getElementById('profile-pic').src = userData.profile_picture_url;
+    document.getElementById('subscription-status').textContent = `Subscription: ${userData.subscription_status ? 'Active' : 'Inactive'}`;
+
+    const chatList = document.getElementById('chat-list');
+    chatList.innerHTML = '';
+
+    userData.client_data_ids.forEach((data_id, index) => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `Data ${index + 1}`;
+        listItem.setAttribute('data-id', data_id);
+        listItem.onclick = () => createBookWindow(data_id, `Data ${index + 1}`);
+        chatList.appendChild(listItem);
+    });
+}
+
+// ✅ Доступ к userData в любой функции
+function getUserName() {
+    return userData ? userData.name : "Guest";
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Components and state management in one file
 const state = {
     currentPage: 'home',
@@ -500,7 +656,7 @@ const createHomePage = () => {
 
     createKeyButton.onclick = async () => {
         try {
-            const response = await fetch("https://api.example.com/generate-key", {
+            const response = await fetch("https://em7mzbs4ug.execute-api.us-east-2.amazonaws.com/default", {
                 method: "POST"
             });
             const data = await response.json();
