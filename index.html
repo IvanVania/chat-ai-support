@@ -4,28 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login with Google</title>
+    <link rel="icon" href="/logo.svg" type="image/x-icon">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+        }
+        .login-container {
+            text-align: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .login-btn {
+            background-color: #4285F4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .login-btn:hover {
+            background-color: #357ae8;
+        }
+    </style>
 </head>
 <body>
-    <h1>Login with Google Example</h1>
-    <button id="google-login-btn" style="padding: 10px 20px; font-size: 16px; background-color: #4285F4; color: white; border: none; border-radius: 5px; cursor: pointer;">
-        Войти через Google
-    </button>
+    <div class="login-container">
+        <h1>Login with Google</h1>
+        <button class="login-btn" onclick="startGoogleAuth()">Login with Google</button>
+    </div>
 
     <script>
-        const clientId = "YOUR_CLIENT_ID"; // Замените на ваш Google OAuth 2.0 Client ID
-        const redirectUri = "YOUR_REDIRECT_URI"; // Замените на URL вашего сервера для обработки ответа
-        const scope = "https://www.googleapis.com/auth/drive.readonly";
-
-        document.getElementById("google-login-btn").addEventListener("click", () => {
-            const authUrl = `https://accounts.google.com/o/oauth2/v2/auth` +
-                `?client_id=${clientId}` +
-                `&redirect_uri=${redirectUri}` +
-                `&response_type=code` +
-                `&scope=${encodeURIComponent(scope)}`;
-
-            // Перенаправляем пользователя на страницу авторизации Google
+        const clientId = "738164681811-u9hkm0qrg6cd3dkj5rv560u85eoafipb.apps.googleusercontent.com";
+        const redirectUri = "https://ivanvania.github.io/chat-ai-support/app/";
+        const authEndpoint = "https://accounts.google.com/o/oauth2/auth";
+        
+        function startGoogleAuth() {
+            const scope = "openid email profile";
+            const authUrl = `${authEndpoint}?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scope)}`;
             window.location.href = authUrl;
-        });
+        }
     </script>
 </body>
 </html>
