@@ -3,7 +3,6 @@
 
 
 
-
 class UserData {
     constructor(client_id, name, email, profile_picture_url, subscription_status, subscription_name, data_document_url, client_data_ids, client_chats_ids) {
         this.client_id = client_id;
@@ -25,6 +24,9 @@ window.onload = async function () {
     const authorizationCode = urlParams.get('code');
     const jwtToken = localStorage.getItem('jwtToken');
 
+    console.log("🔹 Код авторизации:", authorizationCode);
+    console.log("🔹 JWT-токен из localStorage:", jwtToken);
+
     const payload = { code: authorizationCode || null };
     const headers = { 'Content-Type': 'application/json' };
 
@@ -33,13 +35,17 @@ window.onload = async function () {
     }
 
     try {
+        console.log("📡 Отправка запроса в API...");
         const response = await fetch('https://r1h30g86v3.execute-api.us-east-2.amazonaws.com/default', {
             method: 'POST',
             headers: headers,
             body: JSON.stringify(payload)
         });
 
+        console.log("✅ Ответ API:", response);
+
         if (response.status === 401) {
+            console.warn("⛔ Неавторизован! Удаление токена и редирект на логин.");
             localStorage.removeItem('jwtToken');
             window.location.href = 'https://ivanvania.github.io/chat-ai-support/login';
             return;
@@ -50,13 +56,16 @@ window.onload = async function () {
         }
 
         const data = await response.json();
+        console.log("🔹 Полученные данные:", data);
 
         if (data.error) {
+            console.error("❌ Ошибка аутентификации:", data.error);
             if (data.error === 'Authentication failed') {
                 window.location.href = 'https://ivanvania.github.io/chat-ai-support/login';
             }
         } else {
             if (data.access_token) {
+                console.log("🔑 Новый access_token сохранен!");
                 localStorage.setItem('jwtToken', data.access_token);
             }
 
@@ -73,10 +82,11 @@ window.onload = async function () {
                 data.user.client_chats_ids
             );
 
+            console.log("👤 Пользователь загружен:", userData);
             updateUI();
         }
     } catch (error) {
-        console.error('Error executing request:', error);
+        console.error("⚠️ Ошибка выполнения запроса:", error);
         localStorage.removeItem('jwtToken');
         window.location.href = 'https://ivanvania.github.io/chat-ai-support/login';
     }
@@ -85,6 +95,8 @@ window.onload = async function () {
 // ✅ Теперь updateUI использует глобальную `userData`
 function updateUI() {
     if (!userData) return;
+    
+    console.log("🔄 Обновление UI...");
 
     document.getElementById('profile-pic').src = userData.profile_picture_url;
     document.getElementById('subscription-status').textContent = `Subscription: ${userData.subscription_status ? 'Active' : 'Inactive'}`;
@@ -99,13 +111,14 @@ function updateUI() {
         listItem.onclick = () => createBookWindow(data_id, `Data ${index + 1}`);
         chatList.appendChild(listItem);
     });
+
+    console.log("✅ UI обновлен.");
 }
 
 // ✅ Доступ к userData в любой функции
 function getUserName() {
     return userData ? userData.name : "Guest";
 }
-
 
 
 
