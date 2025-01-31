@@ -83,7 +83,7 @@ window.onload = async function () {
             );
 
             console.log("👤 Пользователь загружен:", userData);
-            updateUI();
+            // updateUI();
         }
     } catch (error) {
         console.error("⚠️ Ошибка выполнения запроса:", error);
