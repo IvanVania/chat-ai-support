@@ -86,7 +86,7 @@
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`  // ✅ Теперь токен в заголовке
+                    "Authorization": `Bearer ${token}`
                 }
             });
 
@@ -95,8 +95,8 @@
             console.log("API response data:", data);
 
             if (data.authentication === true) {
-                console.log("Authentication successful, redirecting to /app");
-                window.location.href = "chat-ai-support/app";
+                console.log("Authentication successful, redirecting to app");
+                window.location.href = "https://ivanvania.github.io/chat-ai-support/app/";
             } else {
                 console.log("Authentication failed, clearing token.");
                 localStorage.removeItem("jwtToken");
