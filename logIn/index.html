@@ -86,8 +86,8 @@
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ token })
+                    "Authorization": `Bearer ${token}`  // ✅ Теперь токен в заголовке
+                }
             });
 
             console.log("API response received, status:", response.status);
@@ -99,7 +99,7 @@
                 window.location.href = "/app";
             } else {
                 console.log("Authentication failed, clearing token.");
-                localStorage.removeItem("auth_token");
+                localStorage.removeItem("jwtToken");
                 document.getElementById("loader").style.display = "none";
                 document.getElementById("login-btn").style.display = "block";
             }
