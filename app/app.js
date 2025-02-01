@@ -959,6 +959,8 @@ const createTablePage = () => {
         loadingIndicator.style.display = "block";
         errorMessage.style.display = "none";
 
+        const jwtToken = localStorage.getItem('jwtToken');
+        
         try {
 const response = await fetch("https://rn39s8o0ua.execute-api.us-east-2.amazonaws.com/default/", {
     method: "POST",
