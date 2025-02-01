@@ -764,11 +764,6 @@ const createHomePage = () => {
 
 //TABLES DATA PAGE
 const createTablePage = () => {
-    // Состояние таблицы
-    const state = {
-        tableData: []
-    };
-
     const tableContainer = document.createElement("div");
     tableContainer.style.display = "flex";
     tableContainer.style.flexDirection = "column";
@@ -797,42 +792,15 @@ const createTablePage = () => {
     tableWrapper.style.boxShadow = "0 2px 6px rgba(0,0,0,0.15)";
     tableWrapper.style.borderRadius = "8px";
 
-    // Контейнер уведомлений
-    const notificationsContainer = document.createElement("div");
-    notificationsContainer.style.position = "fixed";
-    notificationsContainer.style.top = "20px";
-    notificationsContainer.style.right = "20px";
-    notificationsContainer.style.zIndex = "1000";
-    notificationsContainer.style.display = "flex";
-    notificationsContainer.style.flexDirection = "column";
-    notificationsContainer.style.gap = "10px";
-    notificationsContainer.style.maxWidth = "300px";
-    document.body.appendChild(notificationsContainer);
-
-    // Создание уведомлений
-    const createNotification = (text, color) => {
-        const notification = document.createElement("div");
-        notification.textContent = text;
-        notification.style.display = "none";
-        notification.style.color = color;
-        notification.style.padding = "12px 16px";
-        notification.style.borderRadius = "4px";
-        notification.style.backgroundColor = "white";
-        notification.style.boxShadow = "0 2px 8px rgba(0,0,0,0.15)";
-        notification.style.border = `1px solid ${color}`;
-        notification.style.fontSize = "14px";
-        notification.style.transition = "opacity 0.3s ease";
-        notification.style.opacity = "0";
-        return notification;
-    };
-
-    const loadingNotification = createNotification("Saving changes...", "#1a73e8");
-    const successNotification = createNotification("Changes saved successfully!", "#28a745");
-    const errorNotification = createNotification("Error saving changes. Please try again.", "#d93025");
-
-    notificationsContainer.appendChild(loadingNotification);
-    notificationsContainer.appendChild(successNotification);
-    notificationsContainer.appendChild(errorNotification);
+    // Initialize table data from userData if available
+    if (!state.tableData) {
+        state.tableData = [];
+        if (userData && userData.data_document_url) {
+            state.tableData = Array.isArray(userData.data_document_url) 
+                ? userData.data_document_url 
+                : [userData.data_document_url];
+        }
+    }
 
     // Table
     const table = document.createElement("table");
@@ -855,7 +823,6 @@ const createTablePage = () => {
                         padding: 12px;
                         border-bottom: 2px solid #ddd;
                         white-space: nowrap;
-                        z-index: 1;
                     ">URL</th>
                     <th style="
                         position: sticky;
@@ -867,7 +834,6 @@ const createTablePage = () => {
                         border-bottom: 2px solid #ddd;
                         width: 100px;
                         text-align: center;
-                        z-index: 1;
                     ">Actions</th>
                 </tr>
             </thead>
@@ -875,7 +841,7 @@ const createTablePage = () => {
                 ${state.tableData.map((row, index) => `
                     <tr style="
                         background-color: ${index % 2 === 0 ? '#ffffff' : '#f8f9fa'};
-                        transition: all 0.2s;
+                        transition: background-color 0.2s;
                         border-bottom: 1px solid #e0e0e0;
                     "
                     onmouseover="this.style.backgroundColor='#f5f5f5'"
@@ -983,24 +949,30 @@ const createTablePage = () => {
         saveButton.style.backgroundColor = "#1a73e8";
     };
 
-    // Функция показа уведомления
-    const showNotification = (notification, duration = 3000) => {
-        notification.style.display = "block";
-        setTimeout(() => notification.style.opacity = "1", 0);
-        if (duration) {
-            setTimeout(() => {
-                notification.style.opacity = "0";
-                setTimeout(() => notification.style.display = "none", 300);
-            }, duration);
-        }
+    // Status Messages
+    const createStatusMessage = (text, color) => {
+        const message = document.createElement("div");
+        message.textContent = text;
+        message.style.display = "none";
+        message.style.color = color;
+        message.style.marginTop = "10px";
+        message.style.fontSize = "14px";
+        message.style.padding = "10px";
+        message.style.borderRadius = "4px";
+        message.style.backgroundColor = `${color}15`;
+        return message;
     };
+
+    const loadingIndicator = createStatusMessage("Saving changes...", "#1a73e8");
+    const successMessage = createStatusMessage("Changes saved successfully!", "#28a745");
+    const errorMessage = createStatusMessage("Error saving changes. Please try again.", "#d93025");
 
     // Save API Call
     saveButton.onclick = async () => {
-        saveButton.disabled = true;
-        showNotification(loadingNotification, 0);
-        successNotification.style.display = "none";
-        errorNotification.style.display = "none";
+        saveButton.style.display = "none";
+        loadingIndicator.style.display = "block";
+        successMessage.style.display = "none";
+        errorMessage.style.display = "none";
 
         const jwtToken = localStorage.getItem('jwtToken');
         
@@ -1016,35 +988,20 @@ const createTablePage = () => {
 
             if (!response.ok) throw new Error("API Error");
 
-            const updatedData = await response.json();
-            window.userDataManager.updateData(updatedData);
-
-            loadingNotification.style.display = "none";
-            showNotification(successNotification);
+            loadingIndicator.style.display = "none";
+            successMessage.style.display = "block";
+            saveButton.style.display = "block";
+            
+            // Hide success message after 3 seconds
+            setTimeout(() => {
+                successMessage.style.display = "none";
+            }, 3000);
         } catch (error) {
-            loadingNotification.style.display = "none";
-            showNotification(errorNotification);
-        } finally {
-            saveButton.disabled = false;
+            loadingIndicator.style.display = "none";
+            saveButton.style.display = "block";
+            errorMessage.style.display = "block";
         }
     };
-
-    // Обновление данных при изменении userDataManager
-    const unsubscribe = window.dataObserver.subscribe((newData) => {
-        if (newData.data_document_url) {
-            state.tableData = Array.isArray(newData.data_document_url) 
-                ? newData.data_document_url 
-                : [newData.data_document_url];
-            updateTable();
-        }
-    });
-
-    // Инициализация начальных данных
-    if (window.userDataManager.data_document_url) {
-        state.tableData = Array.isArray(window.userDataManager.data_document_url)
-            ? window.userDataManager.data_document_url
-            : [window.userDataManager.data_document_url];
-    }
 
     // Button Container
     const buttonContainer = document.createElement("div");
@@ -1054,23 +1011,20 @@ const createTablePage = () => {
 
     updateTable();
     tableWrapper.appendChild(table);
+    
     buttonContainer.appendChild(addRowButton);
     buttonContainer.appendChild(saveButton);
     
     tableContainer.appendChild(title);
     tableContainer.appendChild(tableWrapper);
     tableContainer.appendChild(buttonContainer);
-
-    // Очистка при удалении
-    tableContainer.cleanup = () => {
-        unsubscribe();
-        if (notificationsContainer.parentNode) {
-            notificationsContainer.parentNode.removeChild(notificationsContainer);
-        }
-    };
+    tableContainer.appendChild(loadingIndicator);
+    tableContainer.appendChild(successMessage);
+    tableContainer.appendChild(errorMessage);
 
     return tableContainer;
 };
+
 
 
 
