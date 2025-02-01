@@ -452,17 +452,17 @@ const createHomePage = () => {
     // logo.style.fontWeight = "bold";
     // logo.style.color = "#1f2937";
 
-    // const pricingButton = document.createElement("button");
-    // pricingButton.textContent = "Pricing";
-    // pricingButton.style.padding = "0.5rem 1rem";
-    // pricingButton.style.backgroundColor = "transparent";
-    // pricingButton.style.border = "none";
-    // pricingButton.style.cursor = "pointer";
-    // pricingButton.style.fontSize = "1rem";
-    // pricingButton.style.color = "#4b5563";
+    const pricingButton = document.createElement("button");
+    pricingButton.textContent = "Pricing";
+    pricingButton.style.padding = "0.5rem 1rem";
+    pricingButton.style.backgroundColor = "transparent";
+    pricingButton.style.border = "none";
+    pricingButton.style.cursor = "pointer";
+    pricingButton.style.fontSize = "1rem";
+    pricingButton.style.color = "#4b5563";
 
     // navbar.appendChild(logo);
-    // navbar.appendChild(pricingButton);
+    navbar.appendChild(pricingButton);
     // Navigation Bar
 const navbar = document.createElement("nav");
 navbar.style.padding = "1rem 2rem";
