@@ -27,9 +27,13 @@ window.onload = async function () {
     console.log("🔹 Код авторизации:", authorizationCode);
     console.log("🔹 JWT-токен из localStorage:", jwtToken);
 
-    const payload = { code: authorizationCode || null };
-    const headers = { 'Content-Type': 'application/json' };
+    // Формируем payload: включаем code только если он существует
+    const payload = {};
+    if (authorizationCode) {
+        payload.code = authorizationCode;
+    }
 
+    const headers = { 'Content-Type': 'application/json' };
     if (jwtToken) {
         headers['Authorization'] = `Bearer ${jwtToken}`;
     }
@@ -67,9 +71,12 @@ window.onload = async function () {
             if (data.access_token) {
                 console.log("🔑 Новый access_token сохранен!");
                 localStorage.setItem('jwtToken', data.access_token);
+                // Удаляем параметр code из URL, чтобы при перезагрузке не отправлялся уже использованный код
+                urlParams.delete('code');
+                window.history.replaceState({}, document.title, window.location.pathname);
             }
 
-            // ✅ Теперь сохраняем `userData` в глобальную переменную
+            // Сохраняем userData в глобальную переменную
             userData = new UserData(
                 data.user.client_id,
                 data.user.name,
@@ -83,7 +90,7 @@ window.onload = async function () {
             );
 
             console.log("👤 Пользователь загружен:", userData);
-            // updateUI();
+            // updateUI(); // Вызывайте функцию обновления UI при необходимости
         }
     } catch (error) {
         console.error("⚠️ Ошибка выполнения запроса:", error);
@@ -92,7 +99,7 @@ window.onload = async function () {
     }
 };
 
-// ✅ Теперь updateUI использует глобальную `userData`
+// Функция обновления интерфейса (пример)
 function updateUI() {
     if (!userData) return;
     
@@ -115,7 +122,7 @@ function updateUI() {
     console.log("✅ UI обновлен.");
 }
 
-// ✅ Доступ к userData в любой функции
+// Функция для получения имени пользователя (пример)
 function getUserName() {
     return userData ? userData.name : "Guest";
 }
