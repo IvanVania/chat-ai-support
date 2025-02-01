@@ -7,7 +7,7 @@ class UserData {
     constructor(client_id, name, email, profile_picture_url, subscription_status, subscription_name, data_document_url, client_data_ids, client_chats_ids) {
         this.client_id = client_id;
         this.name = name;
-        this.email = email;
+        this.email = email; 
         this.profile_picture_url = profile_picture_url;
         this.subscription_status = subscription_status;
         this.subscription_name = subscription_name;
