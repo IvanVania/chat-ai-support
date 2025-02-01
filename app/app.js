@@ -122,7 +122,7 @@ function updateUI() {
     }
 
     // Обновление подписки
-    document.getElementById('subscription-status').textContent = `Subscription: ${userData.subscription_status ? 'Active' : 'Inactive'}`;
+    // document.getElementById('subscription-status').textContent = `Subscription: ${userData.subscription_status ? 'Active' : 'Inactive'}`;
 
 
     console.log("✅ UI обновлен.");
