@@ -968,7 +968,7 @@ const response = await fetch("https://rn39s8o0ua.execute-api.us-east-2.amazonaws
         "Content-Type": "application/json",
         "Authorization": `Bearer ${jwtToken}` // Добавляем токен
     },
-    body: JSON.stringify({ data: state.tableData })
+    body: JSON.stringify({ urls: state.tableData })
 });
 
 
