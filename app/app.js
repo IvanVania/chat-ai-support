@@ -9,7 +9,7 @@ class UserData {
         this.name = name;
         this.email = email;
         this.profile_picture_url = profile_picture_url;
-        this.subscription_status = subscription_status;
+        this.subscription_status = subscription_status; 
         this.subscription_name = subscription_name;
         this.data_document_url = data_document_url;
         this.client_data_ids = client_data_ids;
