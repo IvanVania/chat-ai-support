@@ -9,7 +9,7 @@ class UserData {
         this.name = name;
         this.email = email;
         this.profile_picture_url = profile_picture_url;
-        this.subscription_status = subscription_status; 
+        this.subscription_status = subscription_status;
         this.subscription_name = subscription_name;
         this.data_document_url = data_document_url;
         this.client_data_ids = client_data_ids;
@@ -17,106 +17,21 @@ class UserData {
     }
 }
 
-let userData = null;  // Глобальная переменная
+let userData = null;
 
-window.onload = async function () {
-    const urlParams = new URLSearchParams(window.location.search);
-    const authorizationCode = urlParams.get('code');
-    const jwtToken = localStorage.getItem('jwtToken');
-
-    console.log("🔹 Код авторизации:", authorizationCode);
-    console.log("🔹 JWT-токен из localStorage:", jwtToken);
-
-    // Формируем payload: включаем code только если он существует
-    const payload = {};
-    if (authorizationCode) {
-        payload.code = authorizationCode;
-    }
-
-    const headers = { 'Content-Type': 'application/json' };
-    if (jwtToken) {
-        headers['Authorization'] = `Bearer ${jwtToken}`;
-    }
-
-    try {
-        console.log("📡 Отправка запроса в API...");
-        const response = await fetch('https://r1h30g86v3.execute-api.us-east-2.amazonaws.com/default', {
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify(payload)
-        });
-
-        console.log("✅ Ответ API:", response);
-
-        if (response.status === 401) {
-            console.warn("⛔ Неавторизован! Удаление токена и редирект на логин.");
-            localStorage.removeItem('jwtToken');
-            window.location.href = 'https://ivanvania.github.io/chat-ai-support/logIn';
-            return;
-        }
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log("🔹 Полученные данные:", data);
-
-        if (data.error) {
-            console.error("❌ Ошибка аутентификации:", data.error);
-            if (data.error === 'Authentication failed') {
-                window.location.href = 'https://ivanvania.github.io/chat-ai-support/logIn';
-            }
-        } else {
-            if (data.access_token) {
-                console.log("🔑 Новый access_token сохранен!");
-                localStorage.setItem('jwtToken', data.access_token);
-                // Удаляем параметр code из URL, чтобы при перезагрузке не отправлялся уже использованный код
-                urlParams.delete('code');
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
-
-            // Сохраняем userData в глобальную переменную
-            userData = new UserData(
-                data.user.client_id,
-                data.user.name,
-                data.user.email,
-                data.user.profile_picture_url,
-                data.user.subscription_status,
-                data.user.subscription_name,
-                data.user.data_document_url,
-                data.user.client_data_ids,
-                data.user.client_chats_ids
-            );
-
-            console.log("👤 Пользователь загружен:", userData);
-            updateUI(); // Вызывайте функцию обновления UI при необходимости
-        }
-    } catch (error) {
-        console.error("⚠️ Ошибка выполнения запроса:", error);
-        localStorage.removeItem('jwtToken');
-        window.location.href = 'https://ivanvania.github.io/chat-ai-support/logIn';
-    }
-};
-
-// Функция обновления интерфейса (пример)
-function updateUI() {
-    if (!userData) return;
-    
-    console.log("🔄 Starting UI update...");
-
-    // 1. Create and show loading overlay
-    const loadingOverlay = document.createElement('div');
-    loadingOverlay.style.position = 'fixed';
-    loadingOverlay.style.top = '0';
-    loadingOverlay.style.left = '0';
-    loadingOverlay.style.width = '100%';
-    loadingOverlay.style.height = '100%';
-    loadingOverlay.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
-    loadingOverlay.style.display = 'flex';
-    loadingOverlay.style.justifyContent = 'center';
-    loadingOverlay.style.alignItems = 'center';
-    loadingOverlay.style.zIndex = '9999';
+function createLoadingOverlay() {
+    const overlay = document.createElement('div');
+    overlay.id = 'loadingOverlay';
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
+    overlay.style.display = 'flex';
+    overlay.style.justifyContent = 'center';
+    overlay.style.alignItems = 'center';
+    overlay.style.zIndex = '9999';
 
     const spinner = document.createElement('div');
     spinner.style.width = '50px';
@@ -126,66 +41,140 @@ function updateUI() {
     spinner.style.borderRadius = '50%';
     spinner.style.animation = 'spin 1s linear infinite';
 
-    const styleSheet = document.createElement('style');
-    styleSheet.textContent = `
+    const style = document.createElement('style');
+    style.textContent = `
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
     `;
-    document.head.appendChild(styleSheet);
+    document.head.appendChild(style);
+    overlay.appendChild(spinner);
+    return overlay;
+}
 
-    loadingOverlay.appendChild(spinner);
+window.onload = async function() {
+    const loadingOverlay = createLoadingOverlay();
     document.body.appendChild(loadingOverlay);
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const authorizationCode = urlParams.get('code');
+    const jwtToken = localStorage.getItem('jwtToken');
+
+    const payload = authorizationCode ? { code: authorizationCode } : {};
+    const headers = { 
+        'Content-Type': 'application/json',
+        ...(jwtToken && { 'Authorization': `Bearer ${jwtToken}` })
+    };
+
     try {
-        // 2. Update navigation profile
-        const navbar = document.querySelector('nav');
-        if (navbar) {
-            const profileSection = document.createElement('div');
-            profileSection.style.display = 'flex';
-            profileSection.style.alignItems = 'center';
-            profileSection.style.gap = '10px';
+        const response = await fetch('https://r1h30g86v3.execute-api.us-east-2.amazonaws.com/default', {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(payload)
+        });
 
-            const profilePic = document.createElement('img');
-            profilePic.src = userData.profile_picture_url;
-            profilePic.style.width = '40px';
-            profilePic.style.height = '40px';
-            profilePic.style.borderRadius = '50%';
-            profilePic.style.objectFit = 'cover';
-
-            const userEmail = document.createElement('span');
-            userEmail.textContent = userData.email;
-            userEmail.style.color = '#4b5563';
-
-            profileSection.appendChild(profilePic);
-            profileSection.appendChild(userEmail);
-            navbar.appendChild(profileSection);
+        if (response.status === 401) {
+            localStorage.removeItem('jwtToken');
+            window.location.href = 'https://ivanvania.github.io/chat-ai-support/logIn';
+            return;
         }
 
-        // 3. Update table data if on table page
-        if (state.currentPage === 'table' && userData.client_data_ids) {
-            state.tableData = userData.client_data_ids;
-            const tableBody = document.querySelector('tbody');
-            if (tableBody) {
-                updateTable(); // Assuming this function exists in your table page code
+        const data = await response.json();
+
+        if (data.error) {
+            if (data.error === 'Authentication failed') {
+                window.location.href = 'https://ivanvania.github.io/chat-ai-support/logIn';
             }
+            throw new Error(data.error);
         }
 
-        console.log("✅ UI updated successfully");
+        if (data.access_token) {
+            localStorage.setItem('jwtToken', data.access_token);
+            urlParams.delete('code');
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+        userData = new UserData(
+            data.user.client_id,
+            data.user.name,
+            data.user.email,
+            data.user.profile_picture_url,
+            data.user.subscription_status,
+            data.user.subscription_name,
+            data.user.data_document_url,
+            data.user.client_data_ids,
+            data.user.client_chats_ids
+        );
+
+        updateUI();
+        initializeApp();
+        
     } catch (error) {
-        console.error("❌ Error updating UI:", error);
+        localStorage.removeItem('jwtToken');
+        window.location.href = 'https://ivanvania.github.io/chat-ai-support/logIn';
     } finally {
-        // Remove loading overlay after short delay
         setTimeout(() => {
-            loadingOverlay.style.opacity = '0';
-            loadingOverlay.style.transition = 'opacity 0.3s ease';
-            setTimeout(() => loadingOverlay.remove(), 300);
+            loadingOverlay.remove();
         }, 500);
+    }
+};
+
+function updateUI() {
+    if (!userData) return;
+
+    // Обновляем навбар на всех страницах
+    const navbar = document.querySelector('nav');
+    if (navbar) {
+        const existingProfile = navbar.querySelector('.profile-section');
+        if (existingProfile) existingProfile.remove();
+
+        const profileSection = document.createElement('div');
+        profileSection.className = 'profile-section';
+        profileSection.style.display = 'flex';
+        profileSection.style.alignItems = 'center';
+        profileSection.style.gap = '10px';
+        profileSection.style.marginLeft = 'auto';
+        profileSection.style.padding = '10px';
+
+        const profilePic = document.createElement('img');
+        profilePic.src = userData.profile_picture_url;
+        profilePic.style.width = '40px';
+        profilePic.style.height = '40px';
+        profilePic.style.borderRadius = '50%';
+        profilePic.style.objectFit = 'cover';
+
+        const userInfo = document.createElement('div');
+        userInfo.style.display = 'flex';
+        userInfo.style.flexDirection = 'column';
+
+        const userEmail = document.createElement('span');
+        userEmail.textContent = userData.email;
+        userEmail.style.color = '#4b5563';
+        
+        const subscriptionStatus = document.createElement('span');
+        subscriptionStatus.textContent = `Subscription: ${userData.subscription_status ? 'Active' : 'Inactive'}`;
+        subscriptionStatus.style.fontSize = '12px';
+        subscriptionStatus.style.color = userData.subscription_status ? '#10B981' : '#EF4444';
+
+        userInfo.appendChild(userEmail);
+        userInfo.appendChild(subscriptionStatus);
+        profileSection.appendChild(profilePic);
+        profileSection.appendChild(userInfo);
+        navbar.appendChild(profileSection);
+    }
+
+    // Обновляем таблицу если на странице table
+    if (state.currentPage === 'table' && userData.client_data_ids) {
+        state.tableData = userData.client_data_ids;
+        const tableContainer = document.querySelector('#main-content');
+        if (tableContainer) {
+            tableContainer.innerHTML = '';
+            tableContainer.appendChild(createTablePage());
+        }
     }
 }
 
-// Функция для получения имени пользователя (пример)
 function getUserName() {
     return userData ? userData.name : "Guest";
 }
