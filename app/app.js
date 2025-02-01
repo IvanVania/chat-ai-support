@@ -90,7 +90,7 @@ window.onload = async function () {
             );
 
             console.log("👤 Пользователь загружен:", userData);
-            // updateUI(); //  
+            // updateUI(); // Вызывайте функцию обновления UI при необходимости
         }
     } catch (error) {
         console.error("⚠️ Ошибка выполнения запроса:", error);
@@ -103,35 +103,27 @@ window.onload = async function () {
 // Функция обновления интерфейса (пример)
 function updateUI() {
     if (!userData) return;
-
+    
     console.log("🔄 Обновление UI...");
 
-    // Обновление аватара и email в навигационной панели
-    const profilePic = document.getElementById('profile-pic');
-    const userEmail = document.getElementById('user-email');
+    // Обновление аватара и email
+    const profilePic = document.getElementById("profile-pic");
+    const userEmail = document.getElementById("user-email");
 
     if (profilePic && userData.profile_picture_url) {
-        profilePic.src = userData.profile_picture_url;
+        profilePic.style.backgroundImage = `url(${userData.profile_picture_url})`;
+        profilePic.style.backgroundSize = "cover";
+        profilePic.style.backgroundPosition = "center";
+        profilePic.style.backgroundColor = "transparent"; // Убираем серый фон
     }
 
     if (userEmail && userData.email) {
         userEmail.textContent = userData.email;
     }
 
-    // Обновление статуса подписки
+    // Обновление подписки
     document.getElementById('subscription-status').textContent = `Subscription: ${userData.subscription_status ? 'Active' : 'Inactive'}`;
 
-    // Обновление списка чатов
-    const chatList = document.getElementById('chat-list');
-    chatList.innerHTML = '';
-
-    userData.client_data_ids.forEach((data_id, index) => {
-        const listItem = document.createElement('li');
-        listItem.textContent = `Data ${index + 1}`;
-        listItem.setAttribute('data-id', data_id);
-        listItem.onclick = () => createBookWindow(data_id, `Data ${index + 1}`);
-        chatList.appendChild(listItem);
-    });
 
     console.log("✅ UI обновлен.");
 }
@@ -445,7 +437,33 @@ const createHomePage = () => {
     home.style.minHeight = "100vh";
     home.style.backgroundColor = "#f3f4f6";
 
-// Navigation Bar
+    // // Navigation Bar
+    // const navbar = document.createElement("nav");
+    // navbar.style.padding = "1rem 2rem";
+    // navbar.style.backgroundColor = "white";
+    // navbar.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
+    // navbar.style.display = "flex";
+    // navbar.style.justifyContent = "space-between";
+    // navbar.style.alignItems = "center";
+
+    // const logo = document.createElement("div");
+    // logo.textContent = "Dashboard";
+    // logo.style.fontSize = "1.5rem";
+    // logo.style.fontWeight = "bold";
+    // logo.style.color = "#1f2937";
+
+    // const pricingButton = document.createElement("button");
+    // pricingButton.textContent = "Pricing";
+    // pricingButton.style.padding = "0.5rem 1rem";
+    // pricingButton.style.backgroundColor = "transparent";
+    // pricingButton.style.border = "none";
+    // pricingButton.style.cursor = "pointer";
+    // pricingButton.style.fontSize = "1rem";
+    // pricingButton.style.color = "#4b5563";
+
+    // navbar.appendChild(logo);
+    // navbar.appendChild(pricingButton);
+    // Navigation Bar
 const navbar = document.createElement("nav");
 navbar.style.padding = "1rem 2rem";
 navbar.style.backgroundColor = "white";
@@ -466,23 +484,38 @@ userSection.style.display = "flex";
 userSection.style.alignItems = "center";
 userSection.style.gap = "0.75rem";
 
-const userAvatar = document.createElement("img");
-userAvatar.src = "https://via.placeholder.com/40"; // Замените на реальный URL аватара
+// Default gray circle for avatar
+const userAvatar = document.createElement("div");
+userAvatar.id = "profile-pic";
 userAvatar.style.width = "40px";
 userAvatar.style.height = "40px";
 userAvatar.style.borderRadius = "50%";
-userAvatar.style.objectFit = "cover";
+userAvatar.style.backgroundColor = "#d1d5db"; // Серый цвет заглушка
+userAvatar.style.display = "flex";
+userAvatar.style.justifyContent = "center";
+userAvatar.style.alignItems = "center";
 
+// Placeholder text for email (empty initially, but space reserved)
 const userEmail = document.createElement("span");
-userEmail.textContent = "user@example.com"; // Подставьте реальный email пользователя
+userEmail.id = "user-email";
+userEmail.textContent = ""; // Пустой, но место зарезервировано
 userEmail.style.fontSize = "1rem";
 userEmail.style.color = "#4b5563";
+userEmail.style.minWidth = "150px"; // Минимальная ширина, чтобы не смещать UI
 
 userSection.appendChild(userAvatar);
 userSection.appendChild(userEmail);
 
 navbar.appendChild(logo);
 navbar.appendChild(userSection);
+
+
+
+
+
+
+
+
 
 
     // Content Container
