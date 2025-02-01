@@ -17,164 +17,135 @@ class UserData {
     }
 }
 
-let userData = null;
+let userData = null;  // Глобальная переменная
 
-function createLoadingOverlay() {
-    const overlay = document.createElement('div');
-    overlay.id = 'loadingOverlay';
-    overlay.style.position = 'fixed';
-    overlay.style.top = '0';
-    overlay.style.left = '0';
-    overlay.style.width = '100%';
-    overlay.style.height = '100%';
-    overlay.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
-    overlay.style.display = 'flex';
-    overlay.style.justifyContent = 'center';
-    overlay.style.alignItems = 'center';
-    overlay.style.zIndex = '9999';
-
-    const spinner = document.createElement('div');
-    spinner.style.width = '50px';
-    spinner.style.height = '50px';
-    spinner.style.border = '5px solid #f3f3f3';
-    spinner.style.borderTop = '5px solid #3498db';
-    spinner.style.borderRadius = '50%';
-    spinner.style.animation = 'spin 1s linear infinite';
-
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    `;
-    document.head.appendChild(style);
-    overlay.appendChild(spinner);
-    return overlay;
-}
-
-window.onload = async function() {
-    const loadingOverlay = createLoadingOverlay();
-    document.body.appendChild(loadingOverlay);
-
+window.onload = async function () {
     const urlParams = new URLSearchParams(window.location.search);
     const authorizationCode = urlParams.get('code');
     const jwtToken = localStorage.getItem('jwtToken');
 
-    const payload = authorizationCode ? { code: authorizationCode } : {};
-    const headers = { 
-        'Content-Type': 'application/json',
-        ...(jwtToken && { 'Authorization': `Bearer ${jwtToken}` })
-    };
+    console.log("🔹 Код авторизации:", authorizationCode);
+    console.log("🔹 JWT-токен из localStorage:", jwtToken);
+
+    // Формируем payload: включаем code только если он существует
+    const payload = {};
+    if (authorizationCode) {
+        payload.code = authorizationCode;
+    }
+
+    const headers = { 'Content-Type': 'application/json' };
+    if (jwtToken) {
+        headers['Authorization'] = `Bearer ${jwtToken}`;
+    }
 
     try {
+        console.log("📡 Отправка запроса в API...");
         const response = await fetch('https://r1h30g86v3.execute-api.us-east-2.amazonaws.com/default', {
             method: 'POST',
             headers: headers,
             body: JSON.stringify(payload)
         });
 
+        console.log("✅ Ответ API:", response);
+
         if (response.status === 401) {
+            console.warn("⛔ Неавторизован! Удаление токена и редирект на логин.");
             localStorage.removeItem('jwtToken');
             window.location.href = 'https://ivanvania.github.io/chat-ai-support/logIn';
             return;
         }
 
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const data = await response.json();
+        console.log("🔹 Полученные данные:", data);
 
         if (data.error) {
+            console.error("❌ Ошибка аутентификации:", data.error);
             if (data.error === 'Authentication failed') {
                 window.location.href = 'https://ivanvania.github.io/chat-ai-support/logIn';
             }
-            throw new Error(data.error);
+        } else {
+            if (data.access_token) {
+                console.log("🔑 Новый access_token сохранен!");
+                localStorage.setItem('jwtToken', data.access_token);
+                // Удаляем параметр code из URL, чтобы при перезагрузке не отправлялся уже использованный код
+                urlParams.delete('code');
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+
+            // Сохраняем userData в глобальную переменную
+            userData = new UserData(
+                data.user.client_id,
+                data.user.name,
+                data.user.email,
+                data.user.profile_picture_url,
+                data.user.subscription_status,
+                data.user.subscription_name,
+                data.user.data_document_url,
+                data.user.client_data_ids,
+                data.user.client_chats_ids
+            );
+
+            console.log("👤 Пользователь загружен:", userData);
+            updateUI(); // Вызывайте функцию обновления UI при необходимости
         }
-
-        if (data.access_token) {
-            localStorage.setItem('jwtToken', data.access_token);
-            urlParams.delete('code');
-            window.history.replaceState({}, document.title, window.location.pathname);
-        }
-
-        userData = new UserData(
-            data.user.client_id,
-            data.user.name,
-            data.user.email,
-            data.user.profile_picture_url,
-            data.user.subscription_status,
-            data.user.subscription_name,
-            data.user.data_document_url,
-            data.user.client_data_ids,
-            data.user.client_chats_ids
-        );
-
-        updateUI();
-        initializeApp();
-        
     } catch (error) {
+        console.error("⚠️ Ошибка выполнения запроса:", error);
         localStorage.removeItem('jwtToken');
         window.location.href = 'https://ivanvania.github.io/chat-ai-support/logIn';
-    } finally {
-        setTimeout(() => {
-            loadingOverlay.remove();
-        }, 500);
     }
 };
 
+// Функция обновления интерфейса (пример)
+// Функция обновления интерфейса
 function updateUI() {
     if (!userData) return;
 
-    // Обновляем навбар на всех страницах
-    const navbar = document.querySelector('nav');
-    if (navbar) {
-        const existingProfile = navbar.querySelector('.profile-section');
-        if (existingProfile) existingProfile.remove();
+    console.log("🔄 Обновление UI...");
 
-        const profileSection = document.createElement('div');
-        profileSection.className = 'profile-section';
-        profileSection.style.display = 'flex';
-        profileSection.style.alignItems = 'center';
-        profileSection.style.gap = '10px';
-        profileSection.style.marginLeft = 'auto';
-        profileSection.style.padding = '10px';
+    // Убираем загрузочный экран
+    const loadingOverlay = document.getElementById('loading-overlay');
+    if (loadingOverlay) loadingOverlay.style.display = 'none';
 
-        const profilePic = document.createElement('img');
-        profilePic.src = userData.profile_picture_url;
-        profilePic.style.width = '40px';
-        profilePic.style.height = '40px';
-        profilePic.style.borderRadius = '50%';
-        profilePic.style.objectFit = 'cover';
+    // Обновляем навигационный бар (аватар + email)
+    const profilePic = document.getElementById('profile-pic');
+    const emailDisplay = document.getElementById('user-email');
 
-        const userInfo = document.createElement('div');
-        userInfo.style.display = 'flex';
-        userInfo.style.flexDirection = 'column';
+    if (profilePic) profilePic.src = userData.profile_picture_url;
+    if (emailDisplay) emailDisplay.textContent = userData.email;
 
-        const userEmail = document.createElement('span');
-        userEmail.textContent = userData.email;
-        userEmail.style.color = '#4b5563';
-        
-        const subscriptionStatus = document.createElement('span');
-        subscriptionStatus.textContent = `Subscription: ${userData.subscription_status ? 'Active' : 'Inactive'}`;
-        subscriptionStatus.style.fontSize = '12px';
-        subscriptionStatus.style.color = userData.subscription_status ? '#10B981' : '#EF4444';
+    // Обновляем таблицу ссылок
+    const tableBody = document.getElementById('data-table-body');
+    if (tableBody) {
+        tableBody.innerHTML = '';
 
-        userInfo.appendChild(userEmail);
-        userInfo.appendChild(subscriptionStatus);
-        profileSection.appendChild(profilePic);
-        profileSection.appendChild(userInfo);
-        navbar.appendChild(profileSection);
+        userData.client_data_ids.forEach((data_id, index) => {
+            const row = document.createElement('tr');
+
+            const cellNumber = document.createElement('td');
+            cellNumber.textContent = index + 1;
+
+            const cellLink = document.createElement('td');
+            const link = document.createElement('a');
+            link.href = `https://example.com/data/${data_id}`;
+            link.textContent = `Data ${index + 1}`;
+            link.target = "_blank";
+            cellLink.appendChild(link);
+
+            row.appendChild(cellNumber);
+            row.appendChild(cellLink);
+            tableBody.appendChild(row);
+        });
     }
 
-    // Обновляем таблицу если на странице table
-    if (state.currentPage === 'table' && userData.client_data_ids) {
-        state.tableData = userData.client_data_ids;
-        const tableContainer = document.querySelector('#main-content');
-        if (tableContainer) {
-            tableContainer.innerHTML = '';
-            tableContainer.appendChild(createTablePage());
-        }
-    }
+    console.log("✅ UI обновлен.");
 }
 
+
+// Функция для получения имени пользователя (пример)
 function getUserName() {
     return userData ? userData.name : "Guest";
 }
@@ -1136,12 +1107,12 @@ const createSettingsPage = () => {
 
 
 // Page renderer
-const renderPage = (pageName) => {
+function renderPage(pageName) {
     state.currentPage = pageName;
     const mainContent = document.getElementById('main-content');
     mainContent.innerHTML = '';
-    
-    switch(pageName) {
+
+    switch (pageName) {
         case 'home':
             mainContent.appendChild(createHomePage());
             break;
@@ -1152,7 +1123,11 @@ const renderPage = (pageName) => {
             mainContent.appendChild(createSettingsPage());
             break;
     }
-};
+
+    // Повторное обновление UI после рендеринга
+    updateUI();
+}
+
 
 // Initialize app
 const initializeApp = () => {
