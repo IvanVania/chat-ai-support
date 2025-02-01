@@ -27,7 +27,11 @@ window.onload = async function () {
     console.log("🔹 Код авторизации:", authorizationCode);
     console.log("🔹 JWT-токен из localStorage:", jwtToken);
 
-    // Формируем payload: включаем code только если он существует
+    // Показываем индикатор загрузки
+    const loadingOverlay = document.getElementById('loading-overlay');
+    if (loadingOverlay) loadingOverlay.style.display = 'block';
+
+    // Формируем payload
     const payload = {};
     if (authorizationCode) {
         payload.code = authorizationCode;
@@ -71,12 +75,11 @@ window.onload = async function () {
             if (data.access_token) {
                 console.log("🔑 Новый access_token сохранен!");
                 localStorage.setItem('jwtToken', data.access_token);
-                // Удаляем параметр code из URL, чтобы при перезагрузке не отправлялся уже использованный код
                 urlParams.delete('code');
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
 
-            // Сохраняем userData в глобальную переменную
+            // Заполняем userData
             userData = new UserData(
                 data.user.client_id,
                 data.user.name,
@@ -90,7 +93,12 @@ window.onload = async function () {
             );
 
             console.log("👤 Пользователь загружен:", userData);
-            updateUI(); // Вызывайте функцию обновления UI при необходимости
+
+            // Скрываем индикатор загрузки после получения данных
+            if (loadingOverlay) loadingOverlay.style.display = 'none';
+
+            // Обновляем интерфейс
+            updateUI();
         }
     } catch (error) {
         console.error("⚠️ Ошибка выполнения запроса:", error);
@@ -99,23 +107,18 @@ window.onload = async function () {
     }
 };
 
-// Функция обновления интерфейса (пример)
-// Функция обновления интерфейса
+// Функция обновления UI
 function updateUI() {
     if (!userData) return;
 
     console.log("🔄 Обновление UI...");
 
-    // Убираем загрузочный экран
-    const loadingOverlay = document.getElementById('loading-overlay');
-    if (loadingOverlay) loadingOverlay.style.display = 'none';
-
-    // Обновляем навигационный бар (аватар + email)
+    // Навигационный бар (аватар + email)
     const profilePic = document.getElementById('profile-pic');
     const emailDisplay = document.getElementById('user-email');
 
-    if (profilePic) profilePic.src = userData.profile_picture_url;
-    if (emailDisplay) emailDisplay.textContent = userData.email;
+    if (profilePic) profilePic.src = userData.profile_picture_url || 'default-avatar.png';
+    if (emailDisplay) emailDisplay.textContent = userData.email || 'No Email';
 
     // Обновляем таблицу ссылок
     const tableBody = document.getElementById('data-table-body');
@@ -143,7 +146,6 @@ function updateUI() {
 
     console.log("✅ UI обновлен.");
 }
-
 
 // Функция для получения имени пользователя (пример)
 function getUserName() {
@@ -1107,6 +1109,7 @@ const createSettingsPage = () => {
 
 
 // Page renderer
+// Функция рендеринга страницы
 function renderPage(pageName) {
     state.currentPage = pageName;
     const mainContent = document.getElementById('main-content');
@@ -1124,10 +1127,9 @@ function renderPage(pageName) {
             break;
     }
 
-    // Повторное обновление UI после рендеринга
-    updateUI();
+    // Если userData уже загружен, обновляем UI
+    if (userData) updateUI();
 }
-
 
 // Initialize app
 const initializeApp = () => {
@@ -1148,4 +1150,23 @@ const initializeApp = () => {
 };
 
 // Start the app when DOM is loaded
-document.addEventListener("DOMContentLoaded", initializeApp);
+// document.addEventListener("DOMContentLoaded", initializeApp);
+// Запуск приложения
+document.addEventListener("DOMContentLoaded", () => {
+    document.body.style.margin = "0";
+    document.body.style.padding = "0";
+    document.body.style.fontFamily = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    document.body.style.minHeight = "100vh";
+    document.body.style.display = "flex";
+
+    const sidebar = createSidebar();
+    const mainContent = createMainContent();
+
+    document.body.appendChild(sidebar);
+    document.body.appendChild(mainContent);
+
+    renderPage('home');
+});
+
+
+
