@@ -27,11 +27,7 @@ window.onload = async function () {
     console.log("🔹 Код авторизации:", authorizationCode);
     console.log("🔹 JWT-токен из localStorage:", jwtToken);
 
-    // Показываем индикатор загрузки
-    const loadingOverlay = document.getElementById('loading-overlay');
-    if (loadingOverlay) loadingOverlay.style.display = 'block';
-
-    // Формируем payload
+    // Формируем payload: включаем code только если он существует
     const payload = {};
     if (authorizationCode) {
         payload.code = authorizationCode;
@@ -75,11 +71,12 @@ window.onload = async function () {
             if (data.access_token) {
                 console.log("🔑 Новый access_token сохранен!");
                 localStorage.setItem('jwtToken', data.access_token);
+                // Удаляем параметр code из URL, чтобы при перезагрузке не отправлялся уже использованный код
                 urlParams.delete('code');
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
 
-            // Заполняем userData
+            // Сохраняем userData в глобальную переменную
             userData = new UserData(
                 data.user.client_id,
                 data.user.name,
@@ -93,12 +90,7 @@ window.onload = async function () {
             );
 
             console.log("👤 Пользователь загружен:", userData);
-
-            // Скрываем индикатор загрузки после получения данных
-            if (loadingOverlay) loadingOverlay.style.display = 'none';
-
-            // Обновляем интерфейс
-            updateUI();
+            updateUI(); // Вызывайте функцию обновления UI при необходимости
         }
     } catch (error) {
         console.error("⚠️ Ошибка выполнения запроса:", error);
@@ -107,45 +99,43 @@ window.onload = async function () {
     }
 };
 
-// Функция обновления UI
+// Функция обновления интерфейса (пример)
+// Функция обновления интерфейса (пример)
 function updateUI() {
     if (!userData) return;
 
     console.log("🔄 Обновление UI...");
 
-    // Навигационный бар (аватар + email)
+    // Обновление аватара и email в навигационной панели
     const profilePic = document.getElementById('profile-pic');
-    const emailDisplay = document.getElementById('user-email');
+    const userEmail = document.getElementById('user-email');
 
-    if (profilePic) profilePic.src = userData.profile_picture_url || 'default-avatar.png';
-    if (emailDisplay) emailDisplay.textContent = userData.email || 'No Email';
-
-    // Обновляем таблицу ссылок
-    const tableBody = document.getElementById('data-table-body');
-    if (tableBody) {
-        tableBody.innerHTML = '';
-
-        userData.client_data_ids.forEach((data_id, index) => {
-            const row = document.createElement('tr');
-
-            const cellNumber = document.createElement('td');
-            cellNumber.textContent = index + 1;
-
-            const cellLink = document.createElement('td');
-            const link = document.createElement('a');
-            link.href = `https://example.com/data/${data_id}`;
-            link.textContent = `Data ${index + 1}`;
-            link.target = "_blank";
-            cellLink.appendChild(link);
-
-            row.appendChild(cellNumber);
-            row.appendChild(cellLink);
-            tableBody.appendChild(row);
-        });
+    if (profilePic && userData.profile_picture_url) {
+        profilePic.src = userData.profile_picture_url;
     }
+
+    if (userEmail && userData.email) {
+        userEmail.textContent = userData.email;
+    }
+
+    // Обновление статуса подписки
+    document.getElementById('subscription-status').textContent = `Subscription: ${userData.subscription_status ? 'Active' : 'Inactive'}`;
+
+    // Обновление списка чатов
+    const chatList = document.getElementById('chat-list');
+    chatList.innerHTML = '';
+
+    userData.client_data_ids.forEach((data_id, index) => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `Data ${index + 1}`;
+        listItem.setAttribute('data-id', data_id);
+        listItem.onclick = () => createBookWindow(data_id, `Data ${index + 1}`);
+        chatList.appendChild(listItem);
+    });
 
     console.log("✅ UI обновлен.");
 }
+
 
 // Функция для получения имени пользователя (пример)
 function getUserName() {
@@ -455,32 +445,45 @@ const createHomePage = () => {
     home.style.minHeight = "100vh";
     home.style.backgroundColor = "#f3f4f6";
 
-    // Navigation Bar
-    const navbar = document.createElement("nav");
-    navbar.style.padding = "1rem 2rem";
-    navbar.style.backgroundColor = "white";
-    navbar.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
-    navbar.style.display = "flex";
-    navbar.style.justifyContent = "space-between";
-    navbar.style.alignItems = "center";
+// Navigation Bar
+const navbar = document.createElement("nav");
+navbar.style.padding = "1rem 2rem";
+navbar.style.backgroundColor = "white";
+navbar.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
+navbar.style.display = "flex";
+navbar.style.justifyContent = "space-between";
+navbar.style.alignItems = "center";
 
-    const logo = document.createElement("div");
-    logo.textContent = "Dashboard";
-    logo.style.fontSize = "1.5rem";
-    logo.style.fontWeight = "bold";
-    logo.style.color = "#1f2937";
+const logo = document.createElement("div");
+logo.textContent = "Dashboard";
+logo.style.fontSize = "1.5rem";
+logo.style.fontWeight = "bold";
+logo.style.color = "#1f2937";
 
-    const pricingButton = document.createElement("button");
-    pricingButton.textContent = "Pricing";
-    pricingButton.style.padding = "0.5rem 1rem";
-    pricingButton.style.backgroundColor = "transparent";
-    pricingButton.style.border = "none";
-    pricingButton.style.cursor = "pointer";
-    pricingButton.style.fontSize = "1rem";
-    pricingButton.style.color = "#4b5563";
+// User Profile Section
+const userSection = document.createElement("div");
+userSection.style.display = "flex";
+userSection.style.alignItems = "center";
+userSection.style.gap = "0.75rem";
 
-    navbar.appendChild(logo);
-    navbar.appendChild(pricingButton);
+const userAvatar = document.createElement("img");
+userAvatar.src = "https://via.placeholder.com/40"; // Замените на реальный URL аватара
+userAvatar.style.width = "40px";
+userAvatar.style.height = "40px";
+userAvatar.style.borderRadius = "50%";
+userAvatar.style.objectFit = "cover";
+
+const userEmail = document.createElement("span");
+userEmail.textContent = "user@example.com"; // Подставьте реальный email пользователя
+userEmail.style.fontSize = "1rem";
+userEmail.style.color = "#4b5563";
+
+userSection.appendChild(userAvatar);
+userSection.appendChild(userEmail);
+
+navbar.appendChild(logo);
+navbar.appendChild(userSection);
+
 
     // Content Container
     const content = document.createElement("div");
@@ -1109,13 +1112,12 @@ const createSettingsPage = () => {
 
 
 // Page renderer
-// Функция рендеринга страницы
-function renderPage(pageName) {
+const renderPage = (pageName) => {
     state.currentPage = pageName;
     const mainContent = document.getElementById('main-content');
     mainContent.innerHTML = '';
-
-    switch (pageName) {
+    
+    switch(pageName) {
         case 'home':
             mainContent.appendChild(createHomePage());
             break;
@@ -1126,10 +1128,7 @@ function renderPage(pageName) {
             mainContent.appendChild(createSettingsPage());
             break;
     }
-
-    // Если userData уже загружен, обновляем UI
-    if (userData) updateUI();
-}
+};
 
 // Initialize app
 const initializeApp = () => {
@@ -1150,23 +1149,4 @@ const initializeApp = () => {
 };
 
 // Start the app when DOM is loaded
-// document.addEventListener("DOMContentLoaded", initializeApp);
-// Запуск приложения
-document.addEventListener("DOMContentLoaded", () => {
-    document.body.style.margin = "0";
-    document.body.style.padding = "0";
-    document.body.style.fontFamily = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    document.body.style.minHeight = "100vh";
-    document.body.style.display = "flex";
-
-    const sidebar = createSidebar();
-    const mainContent = createMainContent();
-
-    document.body.appendChild(sidebar);
-    document.body.appendChild(mainContent);
-
-    renderPage('home');
-});
-
-
-
+document.addEventListener("DOMContentLoaded", initializeApp);
