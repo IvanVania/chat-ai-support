@@ -960,13 +960,15 @@ const createTablePage = () => {
         errorMessage.style.display = "none";
 
         try {
-            const response = await fetch("https://example.com/api/save", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ data: state.tableData })
-            });
+const response = await fetch("https://rn39s8o0ua.execute-api.us-east-2.amazonaws.com/default/", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${jwtToken}` // Добавляем токен
+    },
+    body: JSON.stringify({ data: state.tableData })
+});
+
 
             if (!response.ok) throw new Error("API Error");
 
