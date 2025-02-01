@@ -60,50 +60,66 @@
         <button id="login-btn" class="login-btn" onclick="startGoogleAuth()">Login with Google</button>
     </div>
 
-    <script>
-        const clientId = "738164681811-u9hkm0qrg6cd3dkj5rv560u85eoafipb.apps.googleusercontent.com";
-        const redirectUri = "https://ivanvania.github.io/chat-ai-support/app/";
-        const authEndpoint = "https://accounts.google.com/o/oauth2/auth";
-        const apiEndpoint = "https://06k7hg4fwk.execute-api.us-east-2.amazonaws.com/default";
+<script>
+    const clientId = "738164681811-u9hkm0qrg6cd3dkj5rv560u85eoafipb.apps.googleusercontent.com";
+    const redirectUri = "https://ivanvania.github.io/chat-ai-support/app/";
+    const authEndpoint = "https://accounts.google.com/o/oauth2/auth";
+    const apiEndpoint = "https://06k7hg4fwk.execute-api.us-east-2.amazonaws.com/default";
 
-        async function checkAuth() {
-            const token = localStorage.getItem("auth_token");
-            if (!token) return;
+    async function checkAuth() {
+        console.log("checkAuth() called on page load");
 
-            document.getElementById("loader").style.display = "block";
-            document.getElementById("login-btn").style.display = "none";
+        const token = localStorage.getItem("auth_token");
+        console.log("Stored token:", token);
 
-            try {
-                const response = await fetch(apiEndpoint, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ token })
-                });
+        if (!token) {
+            console.log("No token found in localStorage, skipping API call.");
+            return;
+        }
 
-                const data = await response.json();
-                if (data.authentication === true) {
-                    window.location.href = "/app";
-                } else {
-                    localStorage.removeItem("auth_token");
-                    document.getElementById("loader").style.display = "none";
-                    document.getElementById("login-btn").style.display = "block";
-                }
-            } catch (error) {
-                console.error("API error:", error);
+        document.getElementById("loader").style.display = "block";
+        document.getElementById("login-btn").style.display = "none";
+
+        try {
+            console.log("Sending request to API...");
+            const response = await fetch(apiEndpoint, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ token })
+            });
+
+            console.log("API response received, status:", response.status);
+            const data = await response.json();
+            console.log("API response data:", data);
+
+            if (data.authentication === true) {
+                console.log("Authentication successful, redirecting to /app");
+                window.location.href = "/app";
+            } else {
+                console.log("Authentication failed, clearing token.");
+                localStorage.removeItem("auth_token");
                 document.getElementById("loader").style.display = "none";
                 document.getElementById("login-btn").style.display = "block";
             }
+        } catch (error) {
+            console.error("API error:", error);
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("login-btn").style.display = "block";
         }
+    }
 
-        function startGoogleAuth() {
-            const scope = "openid email profile";
-            const authUrl = `${authEndpoint}?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scope)}`;
-            window.location.href = authUrl;
-        }
+    function startGoogleAuth() {
+        console.log("Google Auth initiated.");
+        const scope = "openid email profile";
+        const authUrl = `${authEndpoint}?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scope)}`;
+        window.location.href = authUrl;
+    }
 
-        checkAuth();
-    </script>
+    console.log("Page loaded, calling checkAuth...");
+    checkAuth();
+</script>
+
 </body>
 </html>
