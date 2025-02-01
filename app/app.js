@@ -793,6 +793,16 @@ const createTablePage = () => {
     tableWrapper.style.boxShadow = "0 2px 6px rgba(0,0,0,0.15)";
     tableWrapper.style.borderRadius = "8px";
 
+    // Initialize table data from userData if available
+    if (!state.tableData) {
+        state.tableData = [];
+        if (userData && userData.data_document_url) {
+            state.tableData = Array.isArray(userData.data_document_url) 
+                ? userData.data_document_url 
+                : [userData.data_document_url];
+        }
+    }
+
     // Table
     const table = document.createElement("table");
     table.style.width = "100%";
@@ -833,14 +843,17 @@ const createTablePage = () => {
                     <tr style="
                         background-color: ${index % 2 === 0 ? '#ffffff' : '#f8f9fa'};
                         transition: background-color 0.2s;
-                    ">
-                        <td style="position: relative;">
+                        border-bottom: 1px solid #e0e0e0;
+                    "
+                    onmouseover="this.style.backgroundColor='#f5f5f5'"
+                    onmouseout="this.style.backgroundColor='${index % 2 === 0 ? '#ffffff' : '#f8f9fa'}'">
+                        <td style="position: relative; border-right: 1px solid #e0e0e0;">
                             <input type="text" 
                                 value="${row}" 
                                 oninput="updateRow(${index}, this.value)" 
                                 style="
                                     width: 100%;
-                                    padding: 8px 12px;
+                                    padding: 12px;
                                     border: none;
                                     outline: none;
                                     font-size: 14px;
@@ -937,45 +950,53 @@ const createTablePage = () => {
         saveButton.style.backgroundColor = "#1a73e8";
     };
 
-    // Loading Indicator
-    const loadingIndicator = document.createElement("div");
-    loadingIndicator.textContent = "Saving changes...";
-    loadingIndicator.style.display = "none";
-    loadingIndicator.style.color = "#666";
-    loadingIndicator.style.marginTop = "10px";
-    loadingIndicator.style.fontSize = "14px";
+    // Status Messages
+    const createStatusMessage = (text, color) => {
+        const message = document.createElement("div");
+        message.textContent = text;
+        message.style.display = "none";
+        message.style.color = color;
+        message.style.marginTop = "10px";
+        message.style.fontSize = "14px";
+        message.style.padding = "10px";
+        message.style.borderRadius = "4px";
+        message.style.backgroundColor = `${color}15`;
+        return message;
+    };
 
-    // Error Message
-    const errorMessage = document.createElement("div");
-    errorMessage.textContent = "Error saving changes. Please try again.";
-    errorMessage.style.display = "none";
-    errorMessage.style.color = "#d93025";
-    errorMessage.style.marginTop = "10px";
-    errorMessage.style.fontSize = "14px";
+    const loadingIndicator = createStatusMessage("Saving changes...", "#1a73e8");
+    const successMessage = createStatusMessage("Changes saved successfully!", "#28a745");
+    const errorMessage = createStatusMessage("Error saving changes. Please try again.", "#d93025");
 
     // Save API Call
     saveButton.onclick = async () => {
         saveButton.style.display = "none";
         loadingIndicator.style.display = "block";
+        successMessage.style.display = "none";
         errorMessage.style.display = "none";
 
         const jwtToken = localStorage.getItem('jwtToken');
         
         try {
-const response = await fetch("https://rn39s8o0ua.execute-api.us-east-2.amazonaws.com/default/", {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${jwtToken}` // Добавляем токен
-    },
-    body: JSON.stringify({ urls: state.tableData })
-});
-
+            const response = await fetch("https://rn39s8o0ua.execute-api.us-east-2.amazonaws.com/default/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${jwtToken}`
+                },
+                body: JSON.stringify({ urls: state.tableData })
+            });
 
             if (!response.ok) throw new Error("API Error");
 
             loadingIndicator.style.display = "none";
+            successMessage.style.display = "block";
             saveButton.style.display = "block";
+            
+            // Hide success message after 3 seconds
+            setTimeout(() => {
+                successMessage.style.display = "none";
+            }, 3000);
         } catch (error) {
             loadingIndicator.style.display = "none";
             saveButton.style.display = "block";
@@ -999,11 +1020,11 @@ const response = await fetch("https://rn39s8o0ua.execute-api.us-east-2.amazonaws
     tableContainer.appendChild(tableWrapper);
     tableContainer.appendChild(buttonContainer);
     tableContainer.appendChild(loadingIndicator);
+    tableContainer.appendChild(successMessage);
     tableContainer.appendChild(errorMessage);
 
     return tableContainer;
 };
-
 
 
 
