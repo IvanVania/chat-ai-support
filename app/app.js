@@ -437,25 +437,12 @@ const createHomePage = () => {
     home.style.minHeight = "100vh";
     home.style.backgroundColor = "#f3f4f6";
 
-    // // Navigation Bar
-    // const navbar = document.createElement("nav");
-    // navbar.style.padding = "1rem 2rem";
-    // navbar.style.backgroundColor = "white";
-    // navbar.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
-    // navbar.style.display = "flex";
-    // navbar.style.justifyContent = "space-between";
-    // navbar.style.alignItems = "center";
-
-    // const logo = document.createElement("div");
-    // logo.textContent = "Dashboard";
-    // logo.style.fontSize = "1.5rem";
-    // logo.style.fontWeight = "bold";
-    // logo.style.color = "#1f2937";
 
 
 
-    // navbar.appendChild(logo);
-    
+
+
+
     // Navigation Bar
 const navbar = document.createElement("nav");
 navbar.style.padding = "1rem 2rem";
@@ -471,23 +458,22 @@ logo.style.fontSize = "1.5rem";
 logo.style.fontWeight = "bold";
 logo.style.color = "#1f2937";
 
-    const pricingButton = document.createElement("button");
-    pricingButton.textContent = "Pricing";
-    pricingButton.style.padding = "0.5rem 1rem";
-    pricingButton.style.backgroundColor = "transparent";
-    pricingButton.style.border = "none";
-    pricingButton.style.cursor = "pointer";
-    pricingButton.style.fontSize = "1rem";
-    pricingButton.style.color = "#4b5563";
-    
+const pricingButton = document.createElement("button");
+pricingButton.textContent = "Pricing";
+pricingButton.style.padding = "0.5rem 1rem";
+pricingButton.style.backgroundColor = "transparent";
+pricingButton.style.border = "none";
+pricingButton.style.cursor = "pointer";
+pricingButton.style.fontSize = "1rem";
+pricingButton.style.color = "#4b5563";
 
-// User Profile Section
+// User Profile Section (Добавлено справа)
 const userSection = document.createElement("div");
 userSection.style.display = "flex";
 userSection.style.alignItems = "center";
 userSection.style.gap = "0.75rem";
 
-// Default gray circle for avatar
+// Серый кружок вместо фото (по умолчанию)
 const userAvatar = document.createElement("div");
 userAvatar.id = "profile-pic";
 userAvatar.style.width = "40px";
@@ -498,21 +484,20 @@ userAvatar.style.display = "flex";
 userAvatar.style.justifyContent = "center";
 userAvatar.style.alignItems = "center";
 
-// Placeholder text for email (empty initially, but space reserved)
+// Пустое место для email (UI не смещается)
 const userEmail = document.createElement("span");
 userEmail.id = "user-email";
-userEmail.textContent = ""; // Пустой, но место зарезервировано
+userEmail.textContent = ""; // Пусто, но зарезервировано
 userEmail.style.fontSize = "1rem";
 userEmail.style.color = "#4b5563";
-userEmail.style.minWidth = "150px"; // Минимальная ширина, чтобы не смещать UI
+userEmail.style.minWidth = "150px"; // Чтобы UI не прыгал
 
 userSection.appendChild(userAvatar);
 userSection.appendChild(userEmail);
 
 navbar.appendChild(logo);
 navbar.appendChild(pricingButton);
-navbar.appendChild(userSection);
-
+navbar.appendChild(userSection); // Добавлено справа
 
 
 
