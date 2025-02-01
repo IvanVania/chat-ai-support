@@ -90,7 +90,7 @@ window.onload = async function () {
             );
 
             console.log("👤 Пользователь загружен:", userData);
-            // updateUI(); // Вызывайте функцию обновления UI при необходимости
+            updateUI(); // Вызывайте функцию обновления UI при необходимости
         }
     } catch (error) {
         console.error("⚠️ Ошибка выполнения запроса:", error);
@@ -103,23 +103,86 @@ window.onload = async function () {
 function updateUI() {
     if (!userData) return;
     
-    console.log("🔄 Обновление UI...");
+    console.log("🔄 Starting UI update...");
 
-    document.getElementById('profile-pic').src = userData.profile_picture_url;
-    document.getElementById('subscription-status').textContent = `Subscription: ${userData.subscription_status ? 'Active' : 'Inactive'}`;
+    // 1. Create and show loading overlay
+    const loadingOverlay = document.createElement('div');
+    loadingOverlay.style.position = 'fixed';
+    loadingOverlay.style.top = '0';
+    loadingOverlay.style.left = '0';
+    loadingOverlay.style.width = '100%';
+    loadingOverlay.style.height = '100%';
+    loadingOverlay.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
+    loadingOverlay.style.display = 'flex';
+    loadingOverlay.style.justifyContent = 'center';
+    loadingOverlay.style.alignItems = 'center';
+    loadingOverlay.style.zIndex = '9999';
 
-    const chatList = document.getElementById('chat-list');
-    chatList.innerHTML = '';
+    const spinner = document.createElement('div');
+    spinner.style.width = '50px';
+    spinner.style.height = '50px';
+    spinner.style.border = '5px solid #f3f3f3';
+    spinner.style.borderTop = '5px solid #3498db';
+    spinner.style.borderRadius = '50%';
+    spinner.style.animation = 'spin 1s linear infinite';
 
-    userData.client_data_ids.forEach((data_id, index) => {
-        const listItem = document.createElement('li');
-        listItem.textContent = `Data ${index + 1}`;
-        listItem.setAttribute('data-id', data_id);
-        listItem.onclick = () => createBookWindow(data_id, `Data ${index + 1}`);
-        chatList.appendChild(listItem);
-    });
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = `
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    `;
+    document.head.appendChild(styleSheet);
 
-    console.log("✅ UI обновлен.");
+    loadingOverlay.appendChild(spinner);
+    document.body.appendChild(loadingOverlay);
+
+    try {
+        // 2. Update navigation profile
+        const navbar = document.querySelector('nav');
+        if (navbar) {
+            const profileSection = document.createElement('div');
+            profileSection.style.display = 'flex';
+            profileSection.style.alignItems = 'center';
+            profileSection.style.gap = '10px';
+
+            const profilePic = document.createElement('img');
+            profilePic.src = userData.profile_picture_url;
+            profilePic.style.width = '40px';
+            profilePic.style.height = '40px';
+            profilePic.style.borderRadius = '50%';
+            profilePic.style.objectFit = 'cover';
+
+            const userEmail = document.createElement('span');
+            userEmail.textContent = userData.email;
+            userEmail.style.color = '#4b5563';
+
+            profileSection.appendChild(profilePic);
+            profileSection.appendChild(userEmail);
+            navbar.appendChild(profileSection);
+        }
+
+        // 3. Update table data if on table page
+        if (state.currentPage === 'table' && userData.client_data_ids) {
+            state.tableData = userData.client_data_ids;
+            const tableBody = document.querySelector('tbody');
+            if (tableBody) {
+                updateTable(); // Assuming this function exists in your table page code
+            }
+        }
+
+        console.log("✅ UI updated successfully");
+    } catch (error) {
+        console.error("❌ Error updating UI:", error);
+    } finally {
+        // Remove loading overlay after short delay
+        setTimeout(() => {
+            loadingOverlay.style.opacity = '0';
+            loadingOverlay.style.transition = 'opacity 0.3s ease';
+            setTimeout(() => loadingOverlay.remove(), 300);
+        }, 500);
+    }
 }
 
 // Функция для получения имени пользователя (пример)
