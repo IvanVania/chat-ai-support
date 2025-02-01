@@ -47,7 +47,7 @@ window.onload = async function () {
         if (response.status === 401) {
             console.warn("⛔ Неавторизован! Удаление токена и редирект на логин.");
             localStorage.removeItem('jwtToken');
-            window.location.href = 'https://ivanvania.github.io/chat-ai-support/login';
+            window.location.href = 'https://ivanvania.github.io/chat-ai-support/logIn';
             return;
         }
 
@@ -61,7 +61,7 @@ window.onload = async function () {
         if (data.error) {
             console.error("❌ Ошибка аутентификации:", data.error);
             if (data.error === 'Authentication failed') {
-                window.location.href = 'https://ivanvania.github.io/chat-ai-support/login';
+                window.location.href = 'https://ivanvania.github.io/chat-ai-support/logIn';
             }
         } else {
             if (data.access_token) {
@@ -88,7 +88,7 @@ window.onload = async function () {
     } catch (error) {
         console.error("⚠️ Ошибка выполнения запроса:", error);
         localStorage.removeItem('jwtToken');
-        window.location.href = 'https://ivanvania.github.io/chat-ai-support/login';
+        window.location.href = 'https://ivanvania.github.io/chat-ai-support/logIn';
     }
 };
 
