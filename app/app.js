@@ -503,75 +503,52 @@ const createHomePage = () => {
     home.style.minHeight = "100vh";
     home.style.backgroundColor = "#f3f4f6";
 
-
-
-
-
-
-
     // Navigation Bar
-const navbar = document.createElement("nav");
-navbar.style.padding = "1rem 2rem";
-navbar.style.backgroundColor = "white";
-navbar.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
-navbar.style.display = "flex";
-navbar.style.justifyContent = "space-between";
-navbar.style.alignItems = "center";
+    const navbar = document.createElement("nav");
+    navbar.style.padding = "1rem 2rem";
+    navbar.style.backgroundColor = "white";
+    navbar.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
+    navbar.style.display = "flex";
+    navbar.style.justifyContent = "space-between";
+    navbar.style.alignItems = "center";
 
-const logo = document.createElement("div");
-logo.textContent = "Dashboard";
-logo.style.fontSize = "1.5rem";
-logo.style.fontWeight = "bold";
-logo.style.color = "#1f2937";
+    const logo = document.createElement("div");
+    logo.textContent = "Dashboard";
+    logo.style.fontSize = "1.5rem";
+    logo.style.fontWeight = "bold";
+    logo.style.color = "#1f2937";
 
-const pricingButton = document.createElement("button");
-pricingButton.textContent = "Pricing";
-pricingButton.style.padding = "0.5rem 1rem";
-pricingButton.style.backgroundColor = "transparent";
-pricingButton.style.border = "none";
-pricingButton.style.cursor = "pointer";
-pricingButton.style.fontSize = "1rem";
-pricingButton.style.color = "#4b5563";
+    const pricingButton = document.createElement("button");
+    pricingButton.textContent = "Pricing";
+    pricingButton.style.padding = "0.5rem 1rem";
+    pricingButton.style.backgroundColor = "transparent";
+    pricingButton.style.border = "none";
+    pricingButton.style.cursor = "pointer";
+    pricingButton.style.fontSize = "1rem";
+    pricingButton.style.color = "#4b5563";
 
-// User Profile Section (Добавлено справа)
-const userSection = document.createElement("div");
-userSection.style.display = "flex";
-userSection.style.alignItems = "center";
-userSection.style.gap = "0.75rem";
+    // User Profile Section
+    const userSection = document.createElement("div");
+    userSection.style.display = "flex";
+    userSection.style.alignItems = "center";
+    userSection.style.gap = "0.75rem";
 
-// Серый кружок вместо фото (по умолчанию)
-const userAvatar = document.createElement("div");
-userAvatar.id = "profile-pic";
-userAvatar.style.width = "40px";
-userAvatar.style.height = "40px";
-userAvatar.style.borderRadius = "50%";
-userAvatar.style.backgroundColor = "#d1d5db"; // Серый цвет заглушка
-userAvatar.style.display = "flex";
-userAvatar.style.justifyContent = "center";
-userAvatar.style.alignItems = "center";
+    const userAvatar = document.createElement("div");
+    userAvatar.id = "profile-pic";
+    userAvatar.style.width = "40px";
+    userAvatar.style.height = "40px";
+    userAvatar.style.borderRadius = "50%";
+    userAvatar.style.backgroundColor = "#d1d5db";
+    userAvatar.style.display = "flex";
+    userAvatar.style.justifyContent = "center";
+    userAvatar.style.alignItems = "center";
 
-// Пустое место для email (UI не смещается)
-const userEmail = document.createElement("span");
-userEmail.id = "user-email";
-userEmail.textContent = ""; // Пусто, но зарезервировано
-userEmail.style.fontSize = "1rem";
-userEmail.style.color = "#4b5563";
-userEmail.style.minWidth = "150px"; // Чтобы UI не прыгал
-
-userSection.appendChild(userAvatar);
-userSection.appendChild(userEmail);
-
-navbar.appendChild(logo);
-navbar.appendChild(pricingButton);
-navbar.appendChild(userSection); // Добавлено справа
-
-
-
-
-
-
-
-
+    const userEmail = document.createElement("span");
+    userEmail.id = "user-email";
+    userEmail.textContent = "";
+    userEmail.style.fontSize = "1rem";
+    userEmail.style.color = "#4b5563";
+    userEmail.style.minWidth = "150px";
 
     // Content Container
     const content = document.createElement("div");
@@ -586,68 +563,20 @@ navbar.appendChild(userSection); // Добавлено справа
     title.style.fontSize = "2rem";
     title.style.color = "#1f2937";
 
+    // Code Snippet Section with improved styling
+    const snippetSection = document.createElement("div");
+    snippetSection.style.backgroundColor = "white";
+    snippetSection.style.padding = "2rem";
+    snippetSection.style.borderRadius = "0.75rem";
+    snippetSection.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)";
+    snippetSection.style.marginTop = "2rem";
 
-
-
-
-// Code Snippet Section
-const snippetSection = document.createElement("div");
-snippetSection.style.backgroundColor = "white";
-snippetSection.style.padding = "2rem";
-snippetSection.style.borderRadius = "0.5rem";
-snippetSection.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
-
-const snippetTitle = document.createElement("h2");
-snippetTitle.textContent = "Installation Code";
-snippetTitle.style.fontSize = "1.5rem";
-snippetTitle.style.marginBottom = "1rem";
-snippetTitle.style.color = "#1f2937";
-
-const snippetContainer = document.createElement("div");
-snippetContainer.style.display = "none"; // Исправлено: изначально скрыто
-snippetContainer.style.backgroundColor = "#f8fafc";
-snippetContainer.style.padding = "1rem";
-snippetContainer.style.borderRadius = "0.375rem";
-snippetContainer.style.position = "relative";
-snippetContainer.style.display = "flex";  // Используем flexbox
-snippetContainer.style.alignItems = "center";  // Выравниваем по центру
-snippetContainer.style.justifyContent = "space-between"; // Размещаем контент равномерно
-snippetContainer.style.minHeight = "50px"; 
-
-const snippetCode = document.createElement("pre");
-snippetCode.style.margin = "0";
-snippetCode.style.fontSize = "0.875rem";
-snippetCode.style.color = "#334155";
-snippetCode.style.overflow = "auto";
-snippetCode.style.flexGrow = "1"; // Даем тексту больше места
-snippetCode.style.padding = "0.5rem"; 
-snippetCode.textContent = ""; // Добавлено: по умолчанию пусто
-
-const copyButton = document.createElement("button");
-copyButton.textContent = "Copy";
-copyButton.style.padding = "0.5rem 1rem";
-copyButton.style.backgroundColor = "#4f46e5";
-copyButton.style.color = "white";
-copyButton.style.border = "none";
-copyButton.style.borderRadius = "0.375rem";
-copyButton.style.fontSize = "0.75rem";
-copyButton.style.cursor = "pointer";
-copyButton.style.marginLeft = "1rem";  
-copyButton.style.flexShrink = "0";  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    const snippetTitle = document.createElement("h2");
+    snippetTitle.textContent = "Installation Code";
+    snippetTitle.style.fontSize = "1.5rem";
+    snippetTitle.style.marginBottom = "1.5rem";
+    snippetTitle.style.color = "#1f2937";
+    snippetTitle.style.fontWeight = "600";
 
     const getCodeButton = document.createElement("button");
     getCodeButton.textContent = "Get Installation Code";
@@ -655,156 +584,59 @@ copyButton.style.flexShrink = "0";
     getCodeButton.style.backgroundColor = "#4f46e5";
     getCodeButton.style.color = "white";
     getCodeButton.style.border = "none";
-    getCodeButton.style.borderRadius = "0.375rem";
+    getCodeButton.style.borderRadius = "0.5rem";
     getCodeButton.style.cursor = "pointer";
     getCodeButton.style.fontSize = "0.875rem";
     getCodeButton.style.fontWeight = "500";
+    getCodeButton.style.transition = "background-color 0.2s";
+    getCodeButton.style.boxShadow = "0 2px 4px rgba(79, 70, 229, 0.2)";
 
-    // Loading Indicator
-    const loadingIndicator = document.createElement("div");
-    loadingIndicator.style.display = "none";
-    loadingIndicator.style.padding = "1rem";
-    loadingIndicator.style.textAlign = "center";
-    loadingIndicator.style.color = "#6b7280";
-    loadingIndicator.textContent = "Loading...";
-
-
-
-
-
-    
-
-
-    // Pricing Modal
-    const createPricingModal = () => {
-        const modal = document.createElement("div");
-        modal.style.display = "none";
-        modal.style.position = "fixed";
-        modal.style.top = "0";
-        modal.style.left = "0";
-        modal.style.width = "100%";
-        modal.style.height = "100%";
-        modal.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
-        modal.style.zIndex = "1000";
-
-        const modalContent = document.createElement("div");
-        modalContent.style.position = "relative";
-        modalContent.style.backgroundColor = "white";
-        modalContent.style.margin = "4rem auto";
-        modalContent.style.padding = "2rem";
-        modalContent.style.maxWidth = "800px";
-        modalContent.style.borderRadius = "0.5rem";
-        modalContent.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.1)";
-
-        const closeButton = document.createElement("button");
-        closeButton.textContent = "×";
-        closeButton.style.position = "absolute";
-        closeButton.style.right = "1rem";
-        closeButton.style.top = "1rem";
-        closeButton.style.fontSize = "1.5rem";
-        closeButton.style.border = "none";
-        closeButton.style.backgroundColor = "transparent";
-        closeButton.style.cursor = "pointer";
-
-        const modalTitle = document.createElement("h2");
-        modalTitle.textContent = "Choose Your Plan";
-        modalTitle.style.fontSize = "1.875rem";
-        modalTitle.style.marginBottom = "2rem";
-        modalTitle.style.textAlign = "center";
-
-        const plansContainer = document.createElement("div");
-        plansContainer.style.display = "grid";
-        plansContainer.style.gridTemplateColumns = "repeat(auto-fit, minmax(300px, 1fr))";
-        plansContainer.style.gap = "2rem";
-
-        const plans = [
-            {
-                name: "Basic",
-                price: "$15/month",
-                features: ["10,000 messages", "Basic support", "1 team member"]
-            },
-            {
-                name: "Pro",
-                price: "$29/month",
-                features: ["50,000 messages", "Priority support", "5 team members"]
-            }
-        ];
-
-        plans.forEach(plan => {
-            const planCard = document.createElement("div");
-            planCard.style.padding = "2rem";
-            planCard.style.backgroundColor = "#f8fafc";
-            planCard.style.borderRadius = "0.5rem";
-            planCard.style.textAlign = "center";
-
-            const planName = document.createElement("h3");
-            planName.textContent = plan.name;
-            planName.style.fontSize = "1.5rem";
-            planName.style.marginBottom = "1rem";
-
-            const planPrice = document.createElement("div");
-            planPrice.textContent = plan.price;
-            planPrice.style.fontSize = "2rem";
-            planPrice.style.fontWeight = "bold";
-            planPrice.style.marginBottom = "1.5rem";
-
-            const featuresList = document.createElement("ul");
-            featuresList.style.listStyle = "none";
-            featuresList.style.padding = "0";
-            featuresList.style.marginBottom = "1.5rem";
-
-            plan.features.forEach(feature => {
-                const featureItem = document.createElement("li");
-                featureItem.textContent = feature;
-                featureItem.style.marginBottom = "0.5rem";
-                featuresList.appendChild(featureItem);
-            });
-
-            const selectButton = document.createElement("button");
-            selectButton.textContent = "Select Plan";
-            selectButton.style.padding = "0.75rem 1.5rem";
-            selectButton.style.backgroundColor = "#4f46e5";
-            selectButton.style.color = "white";
-            selectButton.style.border = "none";
-            selectButton.style.borderRadius = "0.375rem";
-            selectButton.style.cursor = "pointer";
-            selectButton.style.width = "100%";
-
-            planCard.appendChild(planName);
-            planCard.appendChild(planPrice);
-            planCard.appendChild(featuresList);
-            planCard.appendChild(selectButton);
-            plansContainer.appendChild(planCard);
-        });
-
-        modalContent.appendChild(closeButton);
-        modalContent.appendChild(modalTitle);
-        modalContent.appendChild(plansContainer);
-        modal.appendChild(modalContent);
-
-        closeButton.onclick = () => modal.style.display = "none";
-        return modal;
+    getCodeButton.onmouseover = () => {
+        getCodeButton.style.backgroundColor = "#4338ca";
+    };
+    getCodeButton.onmouseout = () => {
+        getCodeButton.style.backgroundColor = "#4f46e5";
     };
 
+    const snippetContainer = document.createElement("div");
+    snippetContainer.style.display = "none"; // Initially hidden
+    snippetContainer.style.marginTop = "1.5rem";
+    snippetContainer.style.backgroundColor = "#1e1e1e"; // Dark background for code
+    snippetContainer.style.padding = "1.5rem";
+    snippetContainer.style.borderRadius = "0.5rem";
+    snippetContainer.style.position = "relative";
+    snippetContainer.style.display = "flex";
+    snippetContainer.style.alignItems = "center";
+    snippetContainer.style.justifyContent = "space-between";
+    snippetContainer.style.boxShadow = "inset 0 2px 4px rgba(0,0,0,0.1)";
 
+    const snippetCode = document.createElement("pre");
+    snippetCode.style.margin = "0";
+    snippetCode.style.fontSize = "0.875rem";
+    snippetCode.style.color = "#e4e4e7"; // Light text for dark background
+    snippetCode.style.overflow = "auto";
+    snippetCode.style.flexGrow = "1";
+    snippetCode.style.padding = "0.5rem";
+    snippetCode.style.fontFamily = "monospace";
 
+    const copyButton = document.createElement("button");
+    copyButton.textContent = "Copy";
+    copyButton.style.padding = "0.5rem 1rem";
+    copyButton.style.backgroundColor = "#4f46e5";
+    copyButton.style.color = "white";
+    copyButton.style.border = "none";
+    copyButton.style.borderRadius = "0.375rem";
+    copyButton.style.fontSize = "0.75rem";
+    copyButton.style.cursor = "pointer";
+    copyButton.style.marginLeft = "1rem";
+    copyButton.style.transition = "all 0.2s";
+    copyButton.style.flexShrink = "0";
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    const loadingIndicator = document.createElement("div");
+    loadingIndicator.style.display = "none";
+    loadingIndicator.style.color = "#6b7280";
+    loadingIndicator.style.marginTop = "1rem";
+    loadingIndicator.textContent = "Loading...";
 
     // Event Handlers
     pricingButton.onclick = () => {
@@ -813,101 +645,55 @@ copyButton.style.flexShrink = "0";
         modal.style.display = "block";
     };
 
-    createKeyButton.onclick = async () => {
+    getCodeButton.onclick = async () => {
+        loadingIndicator.style.display = "block";
+        snippetContainer.style.display = "none";
+        getCodeButton.style.display = "none";
+
+        const jwtToken = localStorage.getItem('jwtToken');
+
         try {
-            const response = await fetch("https://emsdfghj4ug.execute-api.us-east-2.amazonaws.com/default", {
-                method: "POST"
+            const response = await fetch("https://em7mzbs4ug.execute-api.us-east-2.amazonaws.com/default/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${jwtToken}`
+                }
             });
-            const data = await response.json();
+
+            let data;
+            try {
+                data = await response.json();
+            } catch (jsonError) {
+                console.error("Failed to parse JSON:", jsonError);
+                data = {};
+            }
+
             if (response.ok) {
-                apiTitle.textContent = `API Key: ${data.key}`;
-                createKeyButton.style.display = "none";
+                if (data.client_api_key && data.client_api_key !== "empty") {
+                    snippetContainer.style.display = "flex";
+                    snippetCode.textContent = data.user_service_link;
+                } else {
+                    snippetCode.textContent = "API key not available. Please check your subscription.";
+                    snippetContainer.style.display = "flex";
+                }
+            } else if (response.status === 403) {
+                const modal = createPricingModal();
+                document.body.appendChild(modal);
+                modal.style.display = "block";
+            } else {
+                snippetCode.textContent = `Error: ${data.message || "Unknown error occurred."}`;
+                snippetContainer.style.display = "flex";
             }
         } catch (error) {
-            console.error("Error generating API key:", error);
+            console.error("Network or fetch error:", error);
+            snippetCode.textContent = "Error: Failed to connect to the server. Please try again.";
+            snippetContainer.style.display = "flex";
         }
+
+        loadingIndicator.style.display = "none";
+        getCodeButton.style.display = "block";
     };
-
-
-
-
-
-
-
-
-
-    
-getCodeButton.onclick = async () => {
-    loadingIndicator.style.display = "block";
-    getCodeButton.style.display = "none";
-    snippetContainer.style.display = "none"; // Скрываем код перед новым запросом
-
-    const jwtToken = localStorage.getItem('jwtToken');
-
-    try {
-        const response = await fetch("https://em7mzbs4ug.execute-api.us-east-2.amazonaws.com/default/", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${jwtToken}`
-            }
-        });
-     
-        // Проверяем, если ответ не в формате JSON (например, 403), избегаем ошибки в .json()
-        let data;
-        try {
-            data = await response.json();
-        } catch (jsonError) {
-            console.error("Failed to parse JSON:", jsonError);
-            data = {};
-        }
-
-        if (response.ok) {
-            if (data.client_api_key && data.client_api_key !== "empty") {
-                // Если API-ключ есть, отображаем код
-                snippetContainer.style.display = "block";
-                snippetCode.textContent = data.user_service_link;
-            } else {
-                // API-ключ пустой, показываем сообщение об отсутствии подписки
-                snippetContainer.style.display = "block";
-                snippetCode.textContent = "API key not available. Please check your subscription.";
-            }
-        } else if (response.status === 403) {
-            // Если подписки нет, показываем модальное окно подписки
-            console.warn("Subscription inactive. Opening pricing modal.");
-            const modal = createPricingModal();
-            document.body.appendChild(modal);
-            modal.style.display = "block";
-        } else {
-            // Любая другая ошибка сервера
-            console.error(`API error: ${data.message || "Unknown error"}`);
-            snippetContainer.style.display = "block";
-            snippetCode.textContent = `Error: ${data.message || "Unknown error occurred."}`;
-        }
-    } catch (error) {
-        console.error("Network or fetch error:", error);
-        snippetContainer.style.display = "block";
-        snippetCode.textContent = "Error: Failed to connect to the server. Please try again.";
-    }
-
-    loadingIndicator.style.display = "none";
-    getCodeButton.style.display = "block";
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
 
     copyButton.onclick = () => {
         navigator.clipboard.writeText(snippetCode.textContent);
@@ -917,6 +703,14 @@ getCodeButton.onclick = async () => {
         }, 2000);
     };
 
+    // Assemble the components
+    userSection.appendChild(userAvatar);
+    userSection.appendChild(userEmail);
+
+    navbar.appendChild(logo);
+    navbar.appendChild(pricingButton);
+    navbar.appendChild(userSection);
+
     snippetContainer.appendChild(snippetCode);
     snippetContainer.appendChild(copyButton);
 
@@ -924,12 +718,8 @@ getCodeButton.onclick = async () => {
     snippetSection.appendChild(getCodeButton);
     snippetSection.appendChild(loadingIndicator);
     snippetSection.appendChild(snippetContainer);
-    //  
-snippetContainer.style.display = "none";
 
-    // Assembling the page
     content.appendChild(title);
-    content.appendChild(apiSection);
     content.appendChild(snippetSection);
 
     home.appendChild(navbar);
@@ -937,7 +727,6 @@ snippetContainer.style.display = "none";
 
     return home;
 };
-
 
 
 
