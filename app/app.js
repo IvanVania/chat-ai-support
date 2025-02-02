@@ -590,59 +590,21 @@ navbar.appendChild(userSection); // Добавлено справа
 
 
 
+// Code Snippet Section
+const snippetSection = document.createElement("div");
+snippetSection.style.backgroundColor = "white";
+snippetSection.style.padding = "2rem";
+snippetSection.style.borderRadius = "0.5rem";
+snippetSection.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
 
-
-
-    
-    // API Key Section
-    const apiSection = document.createElement("div");
-    apiSection.style.backgroundColor = "white";
-    apiSection.style.padding = "2rem";
-    apiSection.style.borderRadius = "0.5rem";
-    apiSection.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
-    apiSection.style.marginBottom = "2rem";
-
-    const apiTitle = document.createElement("h2");
-    apiTitle.textContent = "API Key";
-    apiTitle.style.fontSize = "1.5rem";
-    apiTitle.style.marginBottom = "1rem";
-    apiTitle.style.color = "#1f2937";
-
-    const createKeyButton = document.createElement("button");
-    createKeyButton.textContent = "Generate API Key";
-    createKeyButton.style.padding = "0.75rem 1.5rem";
-    createKeyButton.style.backgroundColor = "#4f46e5";
-    createKeyButton.style.color = "white";
-    createKeyButton.style.border = "none";
-    createKeyButton.style.borderRadius = "0.375rem";
-    createKeyButton.style.cursor = "pointer";
-    createKeyButton.style.fontSize = "0.875rem";
-    createKeyButton.style.fontWeight = "500";
-
-    apiSection.appendChild(apiTitle);
-    apiSection.appendChild(createKeyButton);
-
-
-
-
-
-
-
-    // Code Snippet Section
-    const snippetSection = document.createElement("div");
-    snippetSection.style.backgroundColor = "white";
-    snippetSection.style.padding = "2rem";
-    snippetSection.style.borderRadius = "0.5rem";
-    snippetSection.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
-
-    const snippetTitle = document.createElement("h2");
-    snippetTitle.textContent = "Installation Code";
-    snippetTitle.style.fontSize = "1.5rem";
-    snippetTitle.style.marginBottom = "1rem";
-    snippetTitle.style.color = "#1f2937";
+const snippetTitle = document.createElement("h2");
+snippetTitle.textContent = "Installation Code";
+snippetTitle.style.fontSize = "1.5rem";
+snippetTitle.style.marginBottom = "1rem";
+snippetTitle.style.color = "#1f2937";
 
 const snippetContainer = document.createElement("div");
-snippetContainer.style.display = "none"; // Initially hidden
+snippetContainer.style.display = "none"; // Исправлено: изначально скрыто
 snippetContainer.style.backgroundColor = "#f8fafc";
 snippetContainer.style.padding = "1rem";
 snippetContainer.style.borderRadius = "0.375rem";
@@ -659,6 +621,7 @@ snippetCode.style.color = "#334155";
 snippetCode.style.overflow = "auto";
 snippetCode.style.flexGrow = "1"; // Даем тексту больше места
 snippetCode.style.padding = "0.5rem"; 
+snippetCode.textContent = ""; // Добавлено: по умолчанию пусто
 
 const copyButton = document.createElement("button");
 copyButton.textContent = "Copy";
@@ -669,8 +632,12 @@ copyButton.style.border = "none";
 copyButton.style.borderRadius = "0.375rem";
 copyButton.style.fontSize = "0.75rem";
 copyButton.style.cursor = "pointer";
-copyButton.style.marginLeft = "1rem"; //  
-copyButton.style.flexShrink = "0"; // 
+copyButton.style.marginLeft = "1rem";  
+copyButton.style.flexShrink = "0";  
+
+
+
+
 
 
 
@@ -957,6 +924,8 @@ getCodeButton.onclick = async () => {
     snippetSection.appendChild(getCodeButton);
     snippetSection.appendChild(loadingIndicator);
     snippetSection.appendChild(snippetContainer);
+    //  
+snippetContainer.style.display = "none";
 
     // Assembling the page
     content.appendChild(title);
