@@ -20,6 +20,8 @@ class UserData {
 let userData = null;  // Глобальная переменная
 
 window.onload = async function () {
+    showLoadingModal(); // Показываем модальное окно загрузки сразу при загрузке страницы
+
     const urlParams = new URLSearchParams(window.location.search);
     const authorizationCode = urlParams.get('code');
     const jwtToken = localStorage.getItem('jwtToken');
@@ -27,7 +29,6 @@ window.onload = async function () {
     console.log("🔹 Код авторизации:", authorizationCode);
     console.log("🔹 JWT-токен из localStorage:", jwtToken);
 
-    // Формируем payload: включаем code только если он существует
     const payload = {};
     if (authorizationCode) {
         payload.code = authorizationCode;
@@ -71,7 +72,6 @@ window.onload = async function () {
             if (data.access_token) {
                 console.log("🔑 Новый access_token сохранен!");
                 localStorage.setItem('jwtToken', data.access_token);
-                // Удаляем параметр code из URL, чтобы при перезагрузке не отправлялся уже использованный код
                 urlParams.delete('code');
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
@@ -90,14 +90,17 @@ window.onload = async function () {
             );
 
             console.log("👤 Пользователь загружен:", userData);
-            updateUI(); // Вызывайте функцию обновления UI при необходимости
+            updateUI(); // Вызываем обновление UI
         }
     } catch (error) {
         console.error("⚠️ Ошибка выполнения запроса:", error);
         localStorage.removeItem('jwtToken');
         window.location.href = 'https://ivanvania.github.io/chat-ai-support/logIn';
     }
+
+    hideLoadingModal(); // Скрываем модальное окно после загрузки
 };
+
 
 // Функция обновления интерфейса (пример)
 // Функция обновления интерфейса (пример)
@@ -135,7 +138,7 @@ function updateUI() {
         }
     }
 
-    
+
 
     console.log("✅ UI обновлен.");
 }
@@ -426,6 +429,57 @@ const createMainContent = () => {
 
 
 
+// Создание модального окна загрузки (ГЛОБАЛЬНО, ДОБАВЛЯТЬ ОДИН РАЗ)
+const loadingModal = document.createElement("div");
+loadingModal.id = "loading-modal";
+loadingModal.style.display = "none";
+loadingModal.style.position = "fixed";
+loadingModal.style.top = "0";
+loadingModal.style.left = "0";
+loadingModal.style.width = "100%";
+loadingModal.style.height = "100%";
+loadingModal.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+loadingModal.style.zIndex = "2000";
+loadingModal.style.display = "flex";
+loadingModal.style.justifyContent = "center";
+loadingModal.style.alignItems = "center";
+
+// Внутренний контейнер с анимацией загрузки
+const loadingContainer = document.createElement("div");
+loadingContainer.style.width = "80px";
+loadingContainer.style.height = "80px";
+loadingContainer.style.borderRadius = "50%";
+loadingContainer.style.border = "6px solid rgba(255, 255, 255, 0.3)";
+loadingContainer.style.borderTop = "6px solid white";
+loadingContainer.style.animation = "spin 1s linear infinite";
+
+// Добавляем контейнер внутрь модального окна
+loadingModal.appendChild(loadingContainer);
+document.body.appendChild(loadingModal);
+
+// CSS-анимация кручения (добавить в <style> или через JS)
+const styleTag = document.createElement("style");
+styleTag.textContent = `
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}`;
+document.head.appendChild(styleTag);
+
+// Функции управления модальным окном загрузки
+const showLoadingModal = () => {
+    loadingModal.style.display = "flex";
+};
+
+const hideLoadingModal = () => {
+    loadingModal.style.display = "none";
+};
+
+
+
+
+
+
 
 
 
@@ -618,6 +672,10 @@ navbar.appendChild(userSection); // Добавлено справа
     loadingIndicator.style.color = "#6b7280";
     loadingIndicator.textContent = "Loading...";
 
+
+
+
+
     // Pricing Modal
     const createPricingModal = () => {
         const modal = document.createElement("div");
@@ -728,6 +786,26 @@ navbar.appendChild(userSection); // Добавлено справа
         closeButton.onclick = () => modal.style.display = "none";
         return modal;
     };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // Event Handlers
     pricingButton.onclick = () => {
