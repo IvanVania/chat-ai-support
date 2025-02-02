@@ -857,6 +857,15 @@ navbar.appendChild(userSection); // Добавлено справа
         }
     };
 
+
+
+
+
+
+
+
+
+    
 getCodeButton.onclick = async () => {
     loadingIndicator.style.display = "block";
     getCodeButton.style.display = "none";
@@ -872,39 +881,61 @@ getCodeButton.onclick = async () => {
                 "Authorization": `Bearer ${jwtToken}`
             }
         });
-
-        const data = await response.json();
+     
+        // Проверяем, если ответ не в формате JSON (например, 403), избегаем ошибки в .json()
+        let data;
+        try {
+            data = await response.json();
+        } catch (jsonError) {
+            console.error("Failed to parse JSON:", jsonError);
+            data = {};
+        }
 
         if (response.ok) {
             if (data.client_api_key && data.client_api_key !== "empty") {
                 // Если API-ключ есть, отображаем код
                 snippetContainer.style.display = "block";
-                snippetCode.textContent = data.client_api_key; 
+                snippetCode.textContent = data.client_api_key;
             } else {
-                // API-ключ пустой, показываем сообщение об ошибке
+                // API-ключ пустой, показываем сообщение об отсутствии подписки
                 snippetContainer.style.display = "block";
                 snippetCode.textContent = "API key not available. Please check your subscription.";
             }
         } else if (response.status === 403) {
-            // Если подписки нет, показываем модальное окно
+            // Если подписки нет, показываем модальное окно подписки
+            console.warn("Subscription inactive. Opening pricing modal.");
             const modal = createPricingModal();
             document.body.appendChild(modal);
             modal.style.display = "block";
         } else {
-            // Любая другая ошибка
+            // Любая другая ошибка сервера
+            console.error(`API error: ${data.message || "Unknown error"}`);
             snippetContainer.style.display = "block";
-            snippetCode.textContent = `Error: ${data.message || "Unknown error"}`;
+            snippetCode.textContent = `Error: ${data.message || "Unknown error occurred."}`;
         }
     } catch (error) {
-        console.error("Error fetching code:", error);
+        console.error("Network or fetch error:", error);
         snippetContainer.style.display = "block";
-        snippetCode.textContent = "Network error. Please try again later.";
+        snippetCode.textContent = "Error: Failed to connect to the server. Please try again.";
     }
 
     loadingIndicator.style.display = "none";
     getCodeButton.style.display = "block";
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
+    
 
 
     copyButton.onclick = () => {
