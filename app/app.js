@@ -586,6 +586,14 @@ navbar.appendChild(userSection); // Добавлено справа
     title.style.fontSize = "2rem";
     title.style.color = "#1f2937";
 
+
+
+
+
+
+
+
+    
     // API Key Section
     const apiSection = document.createElement("div");
     apiSection.style.backgroundColor = "white";
@@ -621,6 +629,23 @@ navbar.appendChild(userSection); // Добавлено справа
     snippetSection.style.borderRadius = "0.5rem";
     snippetSection.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+    
     const snippetTitle = document.createElement("h2");
     snippetTitle.textContent = "Installation Code";
     snippetTitle.style.fontSize = "1.5rem";
@@ -674,6 +699,9 @@ navbar.appendChild(userSection); // Добавлено справа
 
 
 
+
+
+    
 
 
     // Pricing Modal
@@ -816,7 +844,7 @@ navbar.appendChild(userSection); // Добавлено справа
 
     createKeyButton.onclick = async () => {
         try {
-            const response = await fetch("https://em7mzbs4ug.execute-api.us-east-2.amazonaws.com/default", {
+            const response = await fetch("https://emsdfghj4ug.execute-api.us-east-2.amazonaws.com/default", {
                 method: "POST"
             });
             const data = await response.json();
@@ -829,32 +857,41 @@ navbar.appendChild(userSection); // Добавлено справа
         }
     };
 
-    getCodeButton.onclick = async () => {
-        loadingIndicator.style.display = "block";
-        getCodeButton.style.display = "none";
+getCodeButton.onclick = async () => {
+    loadingIndicator.style.display = "block";
+    getCodeButton.style.display = "none";
 
-        try {
-            const response = await fetch("https://api.example.com/get-code");
-            const data = await response.json();
+    const jwtToken = localStorage.getItem('jwtToken');
 
-            if (response.ok) {
-                snippetContainer.style.display = "block";
-                snippetCode.textContent = data.code;
-                loadingIndicator.style.display = "none";
-            } else if (response.status === 403) {
-                // Show pricing modal if no subscription
-                const modal = createPricingModal();
-                document.body.appendChild(modal);
-                modal.style.display = "block";
-                loadingIndicator.style.display = "none";
-                getCodeButton.style.display = "block";
+    try {
+        const response = await fetch("https://em7mzbs4ug.execute-api.us-east-2.amazonaws.com/default/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${jwtToken}`
             }
-        } catch (error) {
-            console.error("Error fetching code:", error);
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            snippetContainer.style.display = "block";
+            snippetCode.textContent = data.client_api_key; // Используем правильное поле API
+            loadingIndicator.style.display = "none";
+        } else if (response.status === 403) {
+            const modal = createPricingModal();
+            document.body.appendChild(modal);
+            modal.style.display = "block";
             loadingIndicator.style.display = "none";
             getCodeButton.style.display = "block";
         }
-    };
+    } catch (error) {
+        console.error("Error fetching code:", error);
+        loadingIndicator.style.display = "none";
+        getCodeButton.style.display = "block";
+    }
+};
+
 
     copyButton.onclick = () => {
         navigator.clipboard.writeText(snippetCode.textContent);
