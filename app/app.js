@@ -895,7 +895,7 @@ getCodeButton.onclick = async () => {
             if (data.client_api_key && data.client_api_key !== "empty") {
                 // Если API-ключ есть, отображаем код
                 snippetContainer.style.display = "block";
-                snippetCode.textContent = data.client_api_key;
+                snippetCode.textContent = data.user_service_link;
             } else {
                 // API-ключ пустой, показываем сообщение об отсутствии подписки
                 snippetContainer.style.display = "block";
