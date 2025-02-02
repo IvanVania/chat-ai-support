@@ -563,6 +563,9 @@ const createHomePage = () => {
     title.style.fontSize = "2rem";
     title.style.color = "#1f2937";
 
+
+
+
     // Code Snippet Section with improved styling
     const snippetSection = document.createElement("div");
     snippetSection.style.backgroundColor = "white";
@@ -599,13 +602,13 @@ const createHomePage = () => {
     };
 
     const snippetContainer = document.createElement("div");
-    snippetContainer.style.display = "none"; // Initially hidden
+    // Важное изменение: изначально не добавляем стиль display: flex
+    snippetContainer.style.display = "none"; // Полностью скрываем контейнер
     snippetContainer.style.marginTop = "1.5rem";
-    snippetContainer.style.backgroundColor = "#1e1e1e"; // Dark background for code
+    snippetContainer.style.backgroundColor = "#1e1e1e";
     snippetContainer.style.padding = "1.5rem";
     snippetContainer.style.borderRadius = "0.5rem";
     snippetContainer.style.position = "relative";
-    snippetContainer.style.display = "flex";
     snippetContainer.style.alignItems = "center";
     snippetContainer.style.justifyContent = "space-between";
     snippetContainer.style.boxShadow = "inset 0 2px 4px rgba(0,0,0,0.1)";
@@ -613,7 +616,7 @@ const createHomePage = () => {
     const snippetCode = document.createElement("pre");
     snippetCode.style.margin = "0";
     snippetCode.style.fontSize = "0.875rem";
-    snippetCode.style.color = "#e4e4e7"; // Light text for dark background
+    snippetCode.style.color = "#e4e4e7";
     snippetCode.style.overflow = "auto";
     snippetCode.style.flexGrow = "1";
     snippetCode.style.padding = "0.5rem";
@@ -639,15 +642,8 @@ const createHomePage = () => {
     loadingIndicator.textContent = "Loading...";
 
     // Event Handlers
-    pricingButton.onclick = () => {
-        const modal = createPricingModal();
-        document.body.appendChild(modal);
-        modal.style.display = "block";
-    };
-
     getCodeButton.onclick = async () => {
         loadingIndicator.style.display = "block";
-        snippetContainer.style.display = "none";
         getCodeButton.style.display = "none";
 
         const jwtToken = localStorage.getItem('jwtToken');
@@ -671,8 +667,9 @@ const createHomePage = () => {
 
             if (response.ok) {
                 if (data.client_api_key && data.client_api_key !== "empty") {
-                    snippetContainer.style.display = "flex";
                     snippetCode.textContent = data.user_service_link;
+                    // Показываем контейнер и устанавливаем display: flex только после получения данных
+                    snippetContainer.style.display = "flex";
                 } else {
                     snippetCode.textContent = "API key not available. Please check your subscription.";
                     snippetContainer.style.display = "flex";
@@ -704,13 +701,6 @@ const createHomePage = () => {
     };
 
     // Assemble the components
-    userSection.appendChild(userAvatar);
-    userSection.appendChild(userEmail);
-
-    navbar.appendChild(logo);
-    navbar.appendChild(pricingButton);
-    navbar.appendChild(userSection);
-
     snippetContainer.appendChild(snippetCode);
     snippetContainer.appendChild(copyButton);
 
