@@ -121,9 +121,21 @@ function updateUI() {
         userEmail.textContent = userData.email;
     }
 
-    // Обновление подписки
-    // document.getElementById('subscription-status').textContent = `Subscription: ${userData.subscription_status ? 'Active' : 'Inactive'}`;
+    // Обновление 
 
+
+    // Обновление таблицы URL
+    if (userData.data_document_url) {
+        state.tableData = Array.isArray(userData.data_document_url) 
+            ? userData.data_document_url 
+            : [userData.data_document_url];
+        
+        if (typeof updateTable === "function") {
+            updateTable(); // Обновляем таблицу
+        }
+    }
+
+    
 
     console.log("✅ UI обновлен.");
 }
@@ -1134,23 +1146,70 @@ const createSettingsPage = () => {
 
 
 // Page renderer
+// const renderPage = (pageName) => {
+//     state.currentPage = pageName;
+//     const mainContent = document.getElementById('main-content');
+//     mainContent.innerHTML = '';
+    
+//     switch(pageName) {
+//         case 'home':
+//             mainContent.appendChild(createHomePage());
+//             break;
+//         case 'table':
+//             mainContent.appendChild(createTablePage());
+//             break;
+//         case 'settings':
+//             mainContent.appendChild(createSettingsPage());
+//             break;
+//     }
+// };
 const renderPage = (pageName) => {
     state.currentPage = pageName;
     const mainContent = document.getElementById('main-content');
     mainContent.innerHTML = '';
     
+    let newPage;
+    
     switch(pageName) {
         case 'home':
-            mainContent.appendChild(createHomePage());
+            newPage = createHomePage();
             break;
         case 'table':
-            mainContent.appendChild(createTablePage());
+            newPage = createTablePage();
             break;
         case 'settings':
-            mainContent.appendChild(createSettingsPage());
+            newPage = createSettingsPage();
             break;
     }
+
+    if (newPage) {
+        mainContent.appendChild(newPage);
+        updateUI(); // Обновляем UI после рендера
+    }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Initialize app
 const initializeApp = () => {
@@ -1172,3 +1231,14 @@ const initializeApp = () => {
 
 // Start the app when DOM is loaded
 document.addEventListener("DOMContentLoaded", initializeApp);
+
+
+
+
+
+
+
+
+
+
+
