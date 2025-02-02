@@ -860,6 +860,7 @@ navbar.appendChild(userSection); // Добавлено справа
 getCodeButton.onclick = async () => {
     loadingIndicator.style.display = "block";
     getCodeButton.style.display = "none";
+    snippetContainer.style.display = "none"; // Скрываем код перед новым запросом
 
     const jwtToken = localStorage.getItem('jwtToken');
 
@@ -875,22 +876,35 @@ getCodeButton.onclick = async () => {
         const data = await response.json();
 
         if (response.ok) {
-            snippetContainer.style.display = "block";
-            snippetCode.textContent = data.client_api_key; // Используем правильное поле API
-            loadingIndicator.style.display = "none";
+            if (data.client_api_key && data.client_api_key !== "empty") {
+                // Если API-ключ есть, отображаем код
+                snippetContainer.style.display = "block";
+                snippetCode.textContent = data.client_api_key; 
+            } else {
+                // API-ключ пустой, показываем сообщение об ошибке
+                snippetContainer.style.display = "block";
+                snippetCode.textContent = "API key not available. Please check your subscription.";
+            }
         } else if (response.status === 403) {
+            // Если подписки нет, показываем модальное окно
             const modal = createPricingModal();
             document.body.appendChild(modal);
             modal.style.display = "block";
-            loadingIndicator.style.display = "none";
-            getCodeButton.style.display = "block";
+        } else {
+            // Любая другая ошибка
+            snippetContainer.style.display = "block";
+            snippetCode.textContent = `Error: ${data.message || "Unknown error"}`;
         }
     } catch (error) {
         console.error("Error fetching code:", error);
-        loadingIndicator.style.display = "none";
-        getCodeButton.style.display = "block";
+        snippetContainer.style.display = "block";
+        snippetCode.textContent = "Network error. Please try again later.";
     }
+
+    loadingIndicator.style.display = "none";
+    getCodeButton.style.display = "block";
 };
+
 
 
     copyButton.onclick = () => {
