@@ -622,6 +622,12 @@ navbar.appendChild(userSection); // Добавлено справа
     apiSection.appendChild(apiTitle);
     apiSection.appendChild(createKeyButton);
 
+
+
+
+
+
+
     // Code Snippet Section
     const snippetSection = document.createElement("div");
     snippetSection.style.backgroundColor = "white";
@@ -629,54 +635,52 @@ navbar.appendChild(userSection); // Добавлено справа
     snippetSection.style.borderRadius = "0.5rem";
     snippetSection.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
-    
     const snippetTitle = document.createElement("h2");
     snippetTitle.textContent = "Installation Code";
     snippetTitle.style.fontSize = "1.5rem";
     snippetTitle.style.marginBottom = "1rem";
     snippetTitle.style.color = "#1f2937";
 
-    const snippetContainer = document.createElement("div");
-    snippetContainer.style.display = "none"; // Initially hidden
-    snippetContainer.style.backgroundColor = "#f8fafc";
-    snippetContainer.style.padding = "1rem";
-    snippetContainer.style.borderRadius = "0.375rem";
-    snippetContainer.style.position = "relative";
+const snippetContainer = document.createElement("div");
+snippetContainer.style.display = "none"; // Initially hidden
+snippetContainer.style.backgroundColor = "#f8fafc";
+snippetContainer.style.padding = "1rem";
+snippetContainer.style.borderRadius = "0.375rem";
+snippetContainer.style.position = "relative";
+snippetContainer.style.display = "flex";  // Используем flexbox
+snippetContainer.style.alignItems = "center";  // Выравниваем по центру
+snippetContainer.style.justifyContent = "space-between"; // Размещаем контент равномерно
+snippetContainer.style.minHeight = "50px"; 
 
-    const snippetCode = document.createElement("pre");
-    snippetCode.style.margin = "0";
-    snippetCode.style.fontSize = "0.875rem";
-    snippetCode.style.color = "#334155";
-    snippetCode.style.overflow = "auto";
+const snippetCode = document.createElement("pre");
+snippetCode.style.margin = "0";
+snippetCode.style.fontSize = "0.875rem";
+snippetCode.style.color = "#334155";
+snippetCode.style.overflow = "auto";
+snippetCode.style.flexGrow = "1"; // Даем тексту больше места
+snippetCode.style.padding = "0.5rem"; 
 
-    const copyButton = document.createElement("button");
-    copyButton.textContent = "Copy";
-    copyButton.style.position = "absolute";
-    copyButton.style.right = "1rem";
-    copyButton.style.top = "1rem";
-    copyButton.style.padding = "0.5rem 1rem";
-    copyButton.style.backgroundColor = "#4f46e5";
-    copyButton.style.color = "white";
-    copyButton.style.border = "none";
-    copyButton.style.borderRadius = "0.375rem";
-    copyButton.style.fontSize = "0.75rem";
-    copyButton.style.cursor = "pointer";
+const copyButton = document.createElement("button");
+copyButton.textContent = "Copy";
+copyButton.style.padding = "0.5rem 1rem";
+copyButton.style.backgroundColor = "#4f46e5";
+copyButton.style.color = "white";
+copyButton.style.border = "none";
+copyButton.style.borderRadius = "0.375rem";
+copyButton.style.fontSize = "0.75rem";
+copyButton.style.cursor = "pointer";
+copyButton.style.marginLeft = "1rem"; //  
+copyButton.style.flexShrink = "0"; // 
+
+
+
+
+
+
+
+
+
+
 
     const getCodeButton = document.createElement("button");
     getCodeButton.textContent = "Get Installation Code";
