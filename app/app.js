@@ -497,6 +497,7 @@ const hideLoadingModal = () => {
 
 
 // HOME PAGE
+// HOME PAGE
 const createHomePage = () => {
     // Main container
     const home = document.createElement("div");
@@ -512,12 +513,20 @@ const createHomePage = () => {
     navbar.style.justifyContent = "space-between";
     navbar.style.alignItems = "center";
 
+    // Левая часть: логотип
     const logo = document.createElement("div");
     logo.textContent = "Dashboard";
     logo.style.fontSize = "1.5rem";
     logo.style.fontWeight = "bold";
     logo.style.color = "#1f2937";
 
+    // Правая часть: контейнер для кнопки Pricing и секции профиля пользователя
+    const rightContainer = document.createElement("div");
+    rightContainer.style.display = "flex";
+    rightContainer.style.alignItems = "center";
+    rightContainer.style.gap = "1rem";
+
+    // Кнопка Pricing (открывает модальное окно с ценами)
     const pricingButton = document.createElement("button");
     pricingButton.textContent = "Pricing";
     pricingButton.style.padding = "0.5rem 1rem";
@@ -526,8 +535,14 @@ const createHomePage = () => {
     pricingButton.style.cursor = "pointer";
     pricingButton.style.fontSize = "1rem";
     pricingButton.style.color = "#4b5563";
+    pricingButton.onclick = () => {
+        // Предполагается, что функция createPricingModal() определена в вашем проекте
+        const modal = createPricingModal();
+        document.body.appendChild(modal);
+        modal.style.display = "block";
+    };
 
-    // User Profile Section
+    // User Profile Section (аватар и email)
     const userSection = document.createElement("div");
     userSection.style.display = "flex";
     userSection.style.alignItems = "center";
@@ -545,10 +560,20 @@ const createHomePage = () => {
 
     const userEmail = document.createElement("span");
     userEmail.id = "user-email";
-    userEmail.textContent = "";
+    userEmail.textContent = ""; // Значение обновится через updateUI() после получения данных от API
     userEmail.style.fontSize = "1rem";
     userEmail.style.color = "#4b5563";
     userEmail.style.minWidth = "150px";
+
+    // Собираем правую часть навбара
+    userSection.appendChild(userAvatar);
+    userSection.appendChild(userEmail);
+    rightContainer.appendChild(pricingButton);
+    rightContainer.appendChild(userSection);
+
+    // Собираем навигационную панель
+    navbar.appendChild(logo);
+    navbar.appendChild(rightContainer);
 
     // Content Container
     const content = document.createElement("div");
@@ -562,9 +587,6 @@ const createHomePage = () => {
     title.style.margin = "0 0 2rem 0";
     title.style.fontSize = "2rem";
     title.style.color = "#1f2937";
-
-
-
 
     // Code Snippet Section with improved styling
     const snippetSection = document.createElement("div");
@@ -602,8 +624,8 @@ const createHomePage = () => {
     };
 
     const snippetContainer = document.createElement("div");
-    // Важное изменение: изначально не добавляем стиль display: flex
-    snippetContainer.style.display = "none"; // Полностью скрываем контейнер
+    // Изначально контейнер скрыт
+    snippetContainer.style.display = "none";
     snippetContainer.style.marginTop = "1.5rem";
     snippetContainer.style.backgroundColor = "#1e1e1e";
     snippetContainer.style.padding = "1.5rem";
@@ -641,7 +663,7 @@ const createHomePage = () => {
     loadingIndicator.style.marginTop = "1rem";
     loadingIndicator.textContent = "Loading...";
 
-    // Event Handlers
+    // Event Handlers для получения кода установки
     getCodeButton.onclick = async () => {
         loadingIndicator.style.display = "block";
         getCodeButton.style.display = "none";
@@ -668,7 +690,7 @@ const createHomePage = () => {
             if (response.ok) {
                 if (data.client_api_key && data.client_api_key !== "empty") {
                     snippetCode.textContent = data.user_service_link;
-                    // Показываем контейнер и устанавливаем display: flex только после получения данных
+                    // Показываем контейнер после получения данных
                     snippetContainer.style.display = "flex";
                 } else {
                     snippetCode.textContent = "API key not available. Please check your subscription.";
@@ -700,7 +722,7 @@ const createHomePage = () => {
         }, 2000);
     };
 
-    // Assemble the components
+    // Собираем секцию с кодом
     snippetContainer.appendChild(snippetCode);
     snippetContainer.appendChild(copyButton);
 
@@ -709,15 +731,16 @@ const createHomePage = () => {
     snippetSection.appendChild(loadingIndicator);
     snippetSection.appendChild(snippetContainer);
 
+    // Собираем контент страницы
     content.appendChild(title);
     content.appendChild(snippetSection);
 
+    // Собираем основную страницу
     home.appendChild(navbar);
     home.appendChild(content);
 
     return home;
 };
-
 
 
 
