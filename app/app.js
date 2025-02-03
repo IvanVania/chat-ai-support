@@ -1162,6 +1162,8 @@ const initializeApp = () => {
     
     // Render initial page
     renderPage('home');
+
+    setTimeout(updateUI, 0);
 };
 
 // Start the app when DOM is loaded
