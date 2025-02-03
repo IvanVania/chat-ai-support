@@ -752,6 +752,79 @@ const createHomePage = () => {
 
 
 
+//screen price
+function createPricingModal() {
+    const modal = document.createElement("div");
+    modal.id = "pricing-modal";
+    modal.style.position = "fixed";
+    modal.style.top = "0";
+    modal.style.left = "0";
+    modal.style.width = "100%";
+    modal.style.height = "100%";
+    modal.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+    modal.style.display = "flex";
+    modal.style.justifyContent = "center";
+    modal.style.alignItems = "center";
+    modal.style.zIndex = "10000";
+
+    const modalContent = document.createElement("div");
+    modalContent.style.background = "white";
+    modalContent.style.padding = "24px";
+    modalContent.style.borderRadius = "8px";
+    modalContent.style.boxShadow = "0 4px 24px rgba(0, 0, 0, 0.15)";
+    modalContent.style.textAlign = "center";
+    modalContent.style.width = "80%";
+    modalContent.style.maxWidth = "400px";
+
+    const title = document.createElement("h2");
+    title.textContent = "Upgrade Required";
+    title.style.marginBottom = "12px";
+
+    const message = document.createElement("p");
+    message.textContent = "You need a subscription to access this feature.";
+
+    const closeButton = document.createElement("button");
+    closeButton.textContent = "Close";
+    closeButton.style.marginTop = "12px";
+    closeButton.style.padding = "8px 16px";
+    closeButton.style.backgroundColor = "#4f46e5";
+    closeButton.style.color = "white";
+    closeButton.style.border = "none";
+    closeButton.style.borderRadius = "4px";
+    closeButton.style.cursor = "pointer";
+
+    closeButton.onclick = () => {
+        document.body.removeChild(modal);
+    };
+
+    modalContent.appendChild(title);
+    modalContent.appendChild(message);
+    modalContent.appendChild(closeButton);
+    modal.appendChild(modalContent);
+
+    return modal;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
