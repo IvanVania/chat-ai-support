@@ -497,14 +497,8 @@ const hideLoadingModal = () => {
 
 
 // HOME PAGE
-// HOME PAGE
-const createHomePage = () => {
-    // Main container
-    const home = document.createElement("div");
-    home.style.minHeight = "100vh";
-    home.style.backgroundColor = "#f3f4f6";
-
-    // Navigation Bar
+// Создание навигационной панели
+const createNavbar = () => {
     const navbar = document.createElement("nav");
     navbar.style.padding = "1rem 2rem";
     navbar.style.backgroundColor = "white";
@@ -513,20 +507,17 @@ const createHomePage = () => {
     navbar.style.justifyContent = "space-between";
     navbar.style.alignItems = "center";
 
-    // Левая часть: логотип
     const logo = document.createElement("div");
     logo.textContent = "Dashboard";
     logo.style.fontSize = "1.5rem";
     logo.style.fontWeight = "bold";
     logo.style.color = "#1f2937";
 
-    // Правая часть: контейнер для кнопки Pricing и секции профиля пользователя
     const rightContainer = document.createElement("div");
     rightContainer.style.display = "flex";
     rightContainer.style.alignItems = "center";
     rightContainer.style.gap = "1rem";
 
-    // Кнопка Pricing (открывает модальное окно с ценами)
     const pricingButton = document.createElement("button");
     pricingButton.textContent = "Pricing";
     pricingButton.style.padding = "0.5rem 1rem";
@@ -536,13 +527,11 @@ const createHomePage = () => {
     pricingButton.style.fontSize = "1rem";
     pricingButton.style.color = "#4b5563";
     pricingButton.onclick = () => {
-        // Предполагается, что функция createPricingModal() определена в вашем проекте
         const modal = createPricingModal();
         document.body.appendChild(modal);
         modal.style.display = "block";
     };
 
-    // User Profile Section (аватар и email)
     const userSection = document.createElement("div");
     userSection.style.display = "flex";
     userSection.style.alignItems = "center";
@@ -560,35 +549,43 @@ const createHomePage = () => {
 
     const userEmail = document.createElement("span");
     userEmail.id = "user-email";
-    userEmail.textContent = ""; // Значение обновится через updateUI() после получения данных от API
+    userEmail.textContent = "";
     userEmail.style.fontSize = "1rem";
     userEmail.style.color = "#4b5563";
     userEmail.style.minWidth = "150px";
 
-    // Собираем правую часть навбара
     userSection.appendChild(userAvatar);
     userSection.appendChild(userEmail);
     rightContainer.appendChild(pricingButton);
     rightContainer.appendChild(userSection);
 
-    // Собираем навигационную панель
     navbar.appendChild(logo);
     navbar.appendChild(rightContainer);
 
-    // Content Container
+    return navbar;
+};
+
+// Создание основной секции контента
+const createContent = () => {
     const content = document.createElement("div");
     content.style.padding = "2rem";
     content.style.maxWidth = "1200px";
     content.style.margin = "0 auto";
 
-    // Title
     const title = document.createElement("h1");
     title.textContent = "Welcome to Dashboard";
     title.style.margin = "0 0 2rem 0";
     title.style.fontSize = "2rem";
     title.style.color = "#1f2937";
 
-    // Code Snippet Section with improved styling
+    content.appendChild(title);
+    content.appendChild(createSnippetSection());
+
+    return content;
+};
+
+// Создание секции с установочным кодом
+const createSnippetSection = () => {
     const snippetSection = document.createElement("div");
     snippetSection.style.backgroundColor = "white";
     snippetSection.style.padding = "2rem";
@@ -616,31 +613,16 @@ const createHomePage = () => {
     getCodeButton.style.transition = "background-color 0.2s";
     getCodeButton.style.boxShadow = "0 2px 4px rgba(79, 70, 229, 0.2)";
 
-    getCodeButton.onmouseover = () => {
-        getCodeButton.style.backgroundColor = "#4338ca";
-    };
-    getCodeButton.onmouseout = () => {
-        getCodeButton.style.backgroundColor = "#4f46e5";
-    };
-
     const snippetContainer = document.createElement("div");
-    // Изначально контейнер скрыт
     snippetContainer.style.display = "none";
     snippetContainer.style.marginTop = "1.5rem";
     snippetContainer.style.backgroundColor = "#1e1e1e";
     snippetContainer.style.padding = "1.5rem";
     snippetContainer.style.borderRadius = "0.5rem";
-    snippetContainer.style.position = "relative";
-    snippetContainer.style.alignItems = "center";
-    snippetContainer.style.justifyContent = "space-between";
-    snippetContainer.style.boxShadow = "inset 0 2px 4px rgba(0,0,0,0.1)";
 
     const snippetCode = document.createElement("pre");
-    snippetCode.style.margin = "0";
-    snippetCode.style.fontSize = "0.875rem";
     snippetCode.style.color = "#e4e4e7";
     snippetCode.style.overflow = "auto";
-    snippetCode.style.flexGrow = "1";
     snippetCode.style.padding = "0.5rem";
     snippetCode.style.fontFamily = "monospace";
 
@@ -653,66 +635,6 @@ const createHomePage = () => {
     copyButton.style.borderRadius = "0.375rem";
     copyButton.style.fontSize = "0.75rem";
     copyButton.style.cursor = "pointer";
-    copyButton.style.marginLeft = "1rem";
-    copyButton.style.transition = "all 0.2s";
-    copyButton.style.flexShrink = "0";
-
-    const loadingIndicator = document.createElement("div");
-    loadingIndicator.style.display = "none";
-    loadingIndicator.style.color = "#6b7280";
-    loadingIndicator.style.marginTop = "1rem";
-    loadingIndicator.textContent = "Loading...";
-
-    // Event Handlers для получения кода установки
-    getCodeButton.onclick = async () => {
-        loadingIndicator.style.display = "block";
-        getCodeButton.style.display = "none";
-
-        const jwtToken = localStorage.getItem('jwtToken');
-
-        try {
-            const response = await fetch("https://em7mzbs4ug.execute-api.us-east-2.amazonaws.com/default/", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${jwtToken}`
-                }
-            });
-
-            let data;
-            try {
-                data = await response.json();
-            } catch (jsonError) {
-                console.error("Failed to parse JSON:", jsonError);
-                data = {};
-            }
-
-            if (response.ok) {
-                if (data.client_api_key && data.client_api_key !== "empty") {
-                    snippetCode.textContent = data.user_service_link;
-                    // Показываем контейнер после получения данных
-                    snippetContainer.style.display = "flex";
-                } else {
-                    snippetCode.textContent = "API key not available. Please check your subscription.";
-                    snippetContainer.style.display = "flex";
-                }
-            } else if (response.status === 403) {
-                const modal = createPricingModal();
-                document.body.appendChild(modal);
-                modal.style.display = "block";
-            } else {
-                snippetCode.textContent = `Error: ${data.message || "Unknown error occurred."}`;
-                snippetContainer.style.display = "flex";
-            }
-        } catch (error) {
-            console.error("Network or fetch error:", error);
-            snippetCode.textContent = "Error: Failed to connect to the server. Please try again.";
-            snippetContainer.style.display = "flex";
-        }
-
-        loadingIndicator.style.display = "none";
-        getCodeButton.style.display = "block";
-    };
 
     copyButton.onclick = () => {
         navigator.clipboard.writeText(snippetCode.textContent);
@@ -722,22 +644,45 @@ const createHomePage = () => {
         }, 2000);
     };
 
-    // Собираем секцию с кодом
+    getCodeButton.onclick = async () => {
+        snippetContainer.style.display = "flex";
+
+        try {
+            const response = await fetch("https://em7mzbs4ug.execute-api.us-east-2.amazonaws.com/default/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem('jwtToken')}`
+                }
+            });
+
+            const data = await response.json();
+            snippetCode.textContent = data.client_api_key && data.client_api_key !== "empty"
+                ? data.user_service_link
+                : "API key not available.";
+        } catch (error) {
+            snippetCode.textContent = "Error: Failed to connect.";
+        }
+    };
+
     snippetContainer.appendChild(snippetCode);
     snippetContainer.appendChild(copyButton);
 
     snippetSection.appendChild(snippetTitle);
     snippetSection.appendChild(getCodeButton);
-    snippetSection.appendChild(loadingIndicator);
     snippetSection.appendChild(snippetContainer);
 
-    // Собираем контент страницы
-    content.appendChild(title);
-    content.appendChild(snippetSection);
+    return snippetSection;
+};
 
-    // Собираем основную страницу
-    home.appendChild(navbar);
-    home.appendChild(content);
+// Создание главной страницы
+const createHomePage = () => {
+    const home = document.createElement("div");
+    home.style.minHeight = "100vh";
+    home.style.backgroundColor = "#f3f4f6";
+
+    home.appendChild(createNavbar());
+    home.appendChild(createContent());
 
     return home;
 };
