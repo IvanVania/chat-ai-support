@@ -760,7 +760,7 @@ function createPricingModal() {
     modal.style.top = "0";
     modal.style.left = "0";
     modal.style.width = "100%";
-    modal.style.height = "100%";
+    modal.style.height = "100vh"; // Changed to vh unit
     modal.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
     modal.style.display = "flex";
     modal.style.justifyContent = "center";
@@ -774,11 +774,14 @@ function createPricingModal() {
     modalContent.style.boxShadow = "0 6px 24px rgba(0, 0, 0, 0.2)";
     modalContent.style.width = "90%";
     modalContent.style.maxWidth = "400px";
-    modalContent.style.margin = "auto"; // Added margin auto
-    modalContent.style.position = "relative"; // 
+    modalContent.style.minHeight = "200px"; // Added min-height
+    modalContent.style.margin = "auto";
+    modalContent.style.position = "relative";
     modalContent.style.display = "flex";
     modalContent.style.flexDirection = "column";
     modalContent.style.alignItems = "center";
+    modalContent.style.justifyContent = "center"; // Added justify-content
+    modalContent.style.transform = "translateY(-5%)"; // Slight upward offset for visual balance
 
     // Кнопка закрытия (крестик)
     const closeButton = document.createElement("span");
