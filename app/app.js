@@ -806,13 +806,13 @@ const createPricingModal = () => {
         "Up to 100 conversations per month",
         "Standard features",
         "Basic support",
-    ], currentPlan === "Start");
+    ], currentPlan === "Start", currentPlan !== null);
 
     const enterprisePlan = createPlanCard("Enterprise", "Custom", [
         "For large businesses with high data volume",
         "Advanced features & integrations",
         "Dedicated support & account management",
-    ], currentPlan === "Enterprise");
+    ], currentPlan === "Enterprise", currentPlan !== null);
 
     plansContainer.appendChild(startPlan);
     plansContainer.appendChild(enterprisePlan);
@@ -839,8 +839,8 @@ const createPricingModal = () => {
     return modalOverlay;
 };
 
-// Функция создания карточки подписки с проверкой текущего плана
-const createPlanCard = (name, price, features, isActive) => {
+// Функция создания карточки подписки
+const createPlanCard = (name, price, features, isActive, hasActiveSubscription) => {
     const planCard = document.createElement("div");
     planCard.style.background = "#334155";
     planCard.style.padding = "24px";
@@ -889,30 +889,8 @@ const createPlanCard = (name, price, features, isActive) => {
         featuresList.appendChild(listItem);
     });
 
-    if (!isActive) {
-        // Кнопка подписки (только если это не текущий план)
-        const subscribeButton = document.createElement("button");
-        subscribeButton.textContent = "Get Started";
-        subscribeButton.style.width = "100%";
-        subscribeButton.style.padding = "12px";
-        subscribeButton.style.background = "linear-gradient(90deg, #8b5cf6, #ec4899)";
-        subscribeButton.style.color = "white";
-        subscribeButton.style.border = "none";
-        subscribeButton.style.borderRadius = "8px";
-        subscribeButton.style.cursor = "pointer";
-        subscribeButton.style.fontSize = "1rem";
-        subscribeButton.style.fontWeight = "600";
-        subscribeButton.style.transition = "all 0.3s ease-in-out";
-
-        subscribeButton.onmouseover = () => (subscribeButton.style.opacity = "0.9");
-        subscribeButton.onmouseout = () => (subscribeButton.style.opacity = "1");
-
-        planCard.appendChild(planTitle);
-        planCard.appendChild(planPrice);
-        planCard.appendChild(featuresList);
-        planCard.appendChild(subscribeButton);
-    } else {
-        // Кнопка отмены подписки (если это текущий план)
+    // Кнопка отмены подписки (если это активный план)
+    if (isActive) {
         const cancelButton = document.createElement("button");
         cancelButton.textContent = "Cancel Subscription";
         cancelButton.style.width = "100%";
@@ -938,9 +916,33 @@ const createPlanCard = (name, price, features, isActive) => {
         planCard.appendChild(featuresList);
         planCard.appendChild(cancelButton);
     }
+    // Кнопка подписки (если подписка отсутствует и это НЕ текущий план)
+    else if (!hasActiveSubscription) {
+        const subscribeButton = document.createElement("button");
+        subscribeButton.textContent = "Get Started";
+        subscribeButton.style.width = "100%";
+        subscribeButton.style.padding = "12px";
+        subscribeButton.style.background = "linear-gradient(90deg, #8b5cf6, #ec4899)";
+        subscribeButton.style.color = "white";
+        subscribeButton.style.border = "none";
+        subscribeButton.style.borderRadius = "8px";
+        subscribeButton.style.cursor = "pointer";
+        subscribeButton.style.fontSize = "1rem";
+        subscribeButton.style.fontWeight = "600";
+        subscribeButton.style.transition = "all 0.3s ease-in-out";
+
+        subscribeButton.onmouseover = () => (subscribeButton.style.opacity = "0.9");
+        subscribeButton.onmouseout = () => (subscribeButton.style.opacity = "1");
+
+        planCard.appendChild(planTitle);
+        planCard.appendChild(planPrice);
+        planCard.appendChild(featuresList);
+        planCard.appendChild(subscribeButton);
+    }
 
     return planCard;
 };
+
 
 
 
