@@ -774,7 +774,7 @@ function createPricingModal() {
     modalContent.style.boxShadow = "0 6px 24px rgba(0, 0, 0, 0.2)";
     modalContent.style.width = "90%";
     modalContent.style.maxWidth = "400px";
-    modalContent.style.position = "relative";
+    modalContent.style.position = "relative"; // Убираем absolute
     modalContent.style.display = "flex";
     modalContent.style.flexDirection = "column";
     modalContent.style.alignItems = "center";
@@ -853,6 +853,7 @@ function createPricingModal() {
 
     return modal;
 }
+
 
 
 
