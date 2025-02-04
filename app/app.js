@@ -124,8 +124,32 @@ function updateUI() {
         userEmail.textContent = userData.email;
     }
 
-    // Обновление 
+    // Обновление блока подписки
+    const subscriptionBlock = document.getElementById("subscription-block");
+    
+    if (userData.subscription_status && userData.subscription_name) {
+        if (!subscriptionBlock) {
+            const newSubscriptionBlock = document.createElement("div");
+            newSubscriptionBlock.id = "subscription-block";
+            newSubscriptionBlock.textContent = `Subscription: ${userData.subscription_name}`;
+            newSubscriptionBlock.style.fontSize = "0.875rem";
+            newSubscriptionBlock.style.fontWeight = "500";
+            newSubscriptionBlock.style.color = "white";
+            newSubscriptionBlock.style.backgroundColor = "#4f46e5";
+            newSubscriptionBlock.style.padding = "4px 12px";
+            newSubscriptionBlock.style.borderRadius = "8px";
+            newSubscriptionBlock.style.boxShadow = "0 2px 4px rgba(79, 70, 229, 0.2)";
 
+            const logoContainer = document.querySelector("nav div:first-child");
+            if (logoContainer) {
+                logoContainer.appendChild(newSubscriptionBlock);
+            }
+        } else {
+            subscriptionBlock.textContent = `Subscription: ${userData.subscription_name}`;
+        }
+    } else if (subscriptionBlock) {
+        subscriptionBlock.remove(); // Удаляем блок, если подписки больше нет
+    }
 
     // Обновление таблицы URL
     if (userData.data_document_url) {
@@ -138,10 +162,9 @@ function updateUI() {
         }
     }
 
-
-
     console.log("✅ UI обновлен.");
 }
+
 
 
 // Функция для получения имени пользователя (пример)
@@ -507,11 +530,34 @@ const createNavbar = () => {
     navbar.style.justifyContent = "space-between";
     navbar.style.alignItems = "center";
 
+    // Логотип + подписка
+    const logoContainer = document.createElement("div");
+    logoContainer.style.display = "flex";
+    logoContainer.style.alignItems = "center";
+    logoContainer.style.gap = "0.75rem";
+
     const logo = document.createElement("div");
     logo.textContent = "Dashboard";
     logo.style.fontSize = "1.5rem";
     logo.style.fontWeight = "bold";
     logo.style.color = "#1f2937";
+
+    logoContainer.appendChild(logo);
+
+    // Добавляем блок подписки, если есть активная подписка
+    if (userData && userData.subscription_status) {
+        const subscriptionBlock = document.createElement("div");
+        subscriptionBlock.textContent = `Subscription: ${userData.subscription_name}`;
+        subscriptionBlock.style.fontSize = "0.875rem";
+        subscriptionBlock.style.fontWeight = "500";
+        subscriptionBlock.style.color = "white";
+        subscriptionBlock.style.backgroundColor = "#4f46e5";
+        subscriptionBlock.style.padding = "4px 12px";
+        subscriptionBlock.style.borderRadius = "8px";
+        subscriptionBlock.style.boxShadow = "0 2px 4px rgba(79, 70, 229, 0.2)";
+
+        logoContainer.appendChild(subscriptionBlock);
+    }
 
     const rightContainer = document.createElement("div");
     rightContainer.style.display = "flex";
@@ -549,7 +595,7 @@ const createNavbar = () => {
 
     const userEmail = document.createElement("span");
     userEmail.id = "user-email";
-    userEmail.textContent = "";
+    userEmail.textContent = userData ? userData.email : "";
     userEmail.style.fontSize = "1rem";
     userEmail.style.color = "#4b5563";
     userEmail.style.minWidth = "150px";
@@ -559,11 +605,12 @@ const createNavbar = () => {
     rightContainer.appendChild(pricingButton);
     rightContainer.appendChild(userSection);
 
-    navbar.appendChild(logo);
+    navbar.appendChild(logoContainer);
     navbar.appendChild(rightContainer);
 
     return navbar;
 };
+
 
 // Создание основной секции контента
 const createContent = () => {
@@ -686,6 +733,11 @@ const createHomePage = () => {
 
     return home;
 };
+
+
+
+
+
 
 
 
