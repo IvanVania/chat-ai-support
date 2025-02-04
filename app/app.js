@@ -103,7 +103,6 @@ window.onload = async function () {
 
 
 // Функция обновления интерфейса (пример)
-// Функция обновления интерфейса (пример)
 function updateUI() {
     if (!userData) return;
     
@@ -126,29 +125,14 @@ function updateUI() {
 
     // Обновление блока подписки
     const subscriptionBlock = document.getElementById("subscription-block");
-    
-    if (userData.subscription_status && userData.subscription_name) {
-        if (!subscriptionBlock) {
-            const newSubscriptionBlock = document.createElement("div");
-            newSubscriptionBlock.id = "subscription-block";
-            newSubscriptionBlock.textContent = `Subscription: ${userData.subscription_name}`;
-            newSubscriptionBlock.style.fontSize = "0.875rem";
-            newSubscriptionBlock.style.fontWeight = "500";
-            newSubscriptionBlock.style.color = "white";
-            newSubscriptionBlock.style.backgroundColor = "#4f46e5";
-            newSubscriptionBlock.style.padding = "4px 12px";
-            newSubscriptionBlock.style.borderRadius = "8px";
-            newSubscriptionBlock.style.boxShadow = "0 2px 4px rgba(79, 70, 229, 0.2)";
 
-            const logoContainer = document.querySelector("nav div:first-child");
-            if (logoContainer) {
-                logoContainer.appendChild(newSubscriptionBlock);
-            }
-        } else {
+    if (subscriptionBlock) {
+        if (userData.subscription_status && userData.subscription_name) {
             subscriptionBlock.textContent = `Subscription: ${userData.subscription_name}`;
+            subscriptionBlock.style.display = "inline-block"; // Показываем блок
+        } else {
+            subscriptionBlock.style.display = "none"; // Скрываем блок, если подписки нет
         }
-    } else if (subscriptionBlock) {
-        subscriptionBlock.remove(); // Удаляем блок, если подписки больше нет
     }
 
     // Обновление таблицы URL
@@ -160,10 +144,11 @@ function updateUI() {
         if (typeof updateTable === "function") {
             updateTable(); // Обновляем таблицу
         }
-    }
+    } 
 
     console.log("✅ UI обновлен.");
 }
+
 
 
 
@@ -520,7 +505,6 @@ const hideLoadingModal = () => {
 
 
 // HOME PAGE
-// Создание навигационной панели
 const createNavbar = () => {
     const navbar = document.createElement("nav");
     navbar.style.padding = "1rem 2rem";
@@ -544,20 +528,19 @@ const createNavbar = () => {
 
     logoContainer.appendChild(logo);
 
-    // Добавляем блок подписки, если есть активная подписка
-    if (userData && userData.subscription_status) {
-        const subscriptionBlock = document.createElement("div");
-        subscriptionBlock.textContent = `Subscription: ${userData.subscription_name}`;
-        subscriptionBlock.style.fontSize = "0.875rem";
-        subscriptionBlock.style.fontWeight = "500";
-        subscriptionBlock.style.color = "white";
-        subscriptionBlock.style.backgroundColor = "#4f46e5";
-        subscriptionBlock.style.padding = "4px 12px";
-        subscriptionBlock.style.borderRadius = "8px";
-        subscriptionBlock.style.boxShadow = "0 2px 4px rgba(79, 70, 229, 0.2)";
+    // Создаем блок подписки, но не заполняем его (updateUI сделает это)
+    const subscriptionBlock = document.createElement("div");
+    subscriptionBlock.id = "subscription-block";
+    subscriptionBlock.style.fontSize = "0.875rem";
+    subscriptionBlock.style.fontWeight = "500";
+    subscriptionBlock.style.color = "white";
+    subscriptionBlock.style.backgroundColor = "#4f46e5";
+    subscriptionBlock.style.padding = "4px 12px";
+    subscriptionBlock.style.borderRadius = "8px";
+    subscriptionBlock.style.boxShadow = "0 2px 4px rgba(79, 70, 229, 0.2)";
+    subscriptionBlock.style.display = "none"; // Скрываем, пока не будет данных
 
-        logoContainer.appendChild(subscriptionBlock);
-    }
+    logoContainer.appendChild(subscriptionBlock);
 
     const rightContainer = document.createElement("div");
     rightContainer.style.display = "flex";
@@ -595,7 +578,7 @@ const createNavbar = () => {
 
     const userEmail = document.createElement("span");
     userEmail.id = "user-email";
-    userEmail.textContent = userData ? userData.email : "";
+    userEmail.textContent = ""; // Данные обновятся через updateUI()
     userEmail.style.fontSize = "1rem";
     userEmail.style.color = "#4b5563";
     userEmail.style.minWidth = "150px";
@@ -610,6 +593,23 @@ const createNavbar = () => {
 
     return navbar;
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // Создание основной секции контента
