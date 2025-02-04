@@ -770,40 +770,90 @@ function createPricingModal() {
     const modalContent = document.createElement("div");
     modalContent.style.background = "white";
     modalContent.style.padding = "24px";
-    modalContent.style.borderRadius = "8px";
-    modalContent.style.boxShadow = "0 4px 24px rgba(0, 0, 0, 0.15)";
-    modalContent.style.textAlign = "center";
-    modalContent.style.width = "80%";
+    modalContent.style.borderRadius = "12px";
+    modalContent.style.boxShadow = "0 6px 24px rgba(0, 0, 0, 0.2)";
+    modalContent.style.width = "90%";
     modalContent.style.maxWidth = "400px";
+    modalContent.style.position = "relative";
+    modalContent.style.display = "flex";
+    modalContent.style.flexDirection = "column";
+    modalContent.style.alignItems = "center";
 
-    const title = document.createElement("h2");
-    title.textContent = "Upgrade Required";
-    title.style.marginBottom = "12px";
-
-    const message = document.createElement("p");
-    message.textContent = "You need a subscription to access this feature.";
-
-    const closeButton = document.createElement("button");
-    closeButton.textContent = "Close";
-    closeButton.style.marginTop = "12px";
-    closeButton.style.padding = "8px 16px";
-    closeButton.style.backgroundColor = "#4f46e5";
-    closeButton.style.color = "white";
-    closeButton.style.border = "none";
-    closeButton.style.borderRadius = "4px";
+    // Кнопка закрытия (крестик)
+    const closeButton = document.createElement("span");
+    closeButton.innerHTML = "&times;";
+    closeButton.style.position = "absolute";
+    closeButton.style.top = "12px";
+    closeButton.style.right = "16px";
+    closeButton.style.fontSize = "24px";
     closeButton.style.cursor = "pointer";
+    closeButton.style.color = "#555";
 
     closeButton.onclick = () => {
         document.body.removeChild(modal);
     };
 
-    modalContent.appendChild(title);
-    modalContent.appendChild(message);
+    // Контейнер для подписок
+    const plansContainer = document.createElement("div");
+    plansContainer.style.width = "100%";
+    plansContainer.style.display = "flex";
+    plansContainer.style.flexDirection = "column";
+    plansContainer.style.gap = "16px";
+
+    // Функция для создания карточек подписки
+    function createPlan(name, price) {
+        const plan = document.createElement("div");
+        plan.style.background = "#f8f9fa";
+        plan.style.padding = "16px";
+        plan.style.borderRadius = "8px";
+        plan.style.textAlign = "center";
+        plan.style.boxShadow = "0 2px 6px rgba(0, 0, 0, 0.1)";
+        
+        const planTitle = document.createElement("h3");
+        planTitle.textContent = name;
+        planTitle.style.margin = "0 0 8px";
+        planTitle.style.fontSize = "18px";
+        planTitle.style.color = "#333";
+
+        const planPrice = document.createElement("p");
+        planPrice.textContent = price;
+        planPrice.style.margin = "0 0 12px";
+        planPrice.style.fontSize = "16px";
+        planPrice.style.color = "#666";
+
+        const subscribeButton = document.createElement("button");
+        subscribeButton.textContent = "Subscribe";
+        subscribeButton.style.width = "100%";
+        subscribeButton.style.padding = "10px";
+        subscribeButton.style.backgroundColor = "#1d4ed8";
+        subscribeButton.style.color = "white";
+        subscribeButton.style.border = "none";
+        subscribeButton.style.borderRadius = "6px";
+        subscribeButton.style.cursor = "pointer";
+        subscribeButton.style.fontSize = "14px";
+        subscribeButton.style.fontWeight = "500";
+
+        subscribeButton.onmouseover = () => subscribeButton.style.backgroundColor = "#1e40af";
+        subscribeButton.onmouseout = () => subscribeButton.style.backgroundColor = "#1d4ed8";
+
+        plan.appendChild(planTitle);
+        plan.appendChild(planPrice);
+        plan.appendChild(subscribeButton);
+
+        return plan;
+    }
+
+    // Добавляем карточки подписок
+    plansContainer.appendChild(createPlan("Start", "$14.99"));
+    plansContainer.appendChild(createPlan("Enterprise", "Custom"));
+
     modalContent.appendChild(closeButton);
+    modalContent.appendChild(plansContainer);
     modal.appendChild(modalContent);
 
     return modal;
 }
+
 
 
 
