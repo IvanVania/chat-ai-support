@@ -548,7 +548,7 @@ const createNavbar = () => {
     rightContainer.style.gap = "1rem";
 
     const pricingButton = document.createElement("button");
-    pricingButton.textContent = "Pricing";
+    pricingButton.textContent = "Subscription management";
     pricingButton.style.padding = "0.5rem 1rem";
     pricingButton.style.backgroundColor = "transparent";
     pricingButton.style.border = "none";
