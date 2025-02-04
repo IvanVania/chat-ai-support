@@ -749,36 +749,69 @@ const createHomePage = () => {
 
 
 
-//screen price
-function createPricingModal() {
-    const modal = document.createElement("div");
-    modal.id = "pricing-modal";
-    modal.style.position = "fixed";
-    modal.style.top = "0";
-    modal.style.left = "0";
-    modal.style.width = "100%";
-    modal.style.height = "100vh"; // Changed to vh unit
-    modal.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
-    modal.style.display = "flex";
-    modal.style.justifyContent = "center";
-    modal.style.alignItems = "center";
-    modal.style.zIndex = "10000";
+const createPricingModal = () => {
+    // Основное затемненное покрытие
+    const modalOverlay = document.createElement("div");
+    modalOverlay.id = "pricing-modal";
+    modalOverlay.style.position = "fixed";
+    modalOverlay.style.top = "0";
+    modalOverlay.style.left = "0";
+    modalOverlay.style.width = "100%";
+    modalOverlay.style.height = "100vh";
+    modalOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
+    modalOverlay.style.display = "flex";
+    modalOverlay.style.justifyContent = "center";
+    modalOverlay.style.alignItems = "center";
+    modalOverlay.style.zIndex = "10000";
 
+    // Внутреннее окно (контейнер)
     const modalContent = document.createElement("div");
-    modalContent.style.background = "white";
-    modalContent.style.padding = "24px";
-    modalContent.style.borderRadius = "12px";
-    modalContent.style.boxShadow = "0 6px 24px rgba(0, 0, 0, 0.2)";
+    modalContent.style.background = "#1e293b";
+    modalContent.style.padding = "32px";
+    modalContent.style.borderRadius = "16px";
+    modalContent.style.boxShadow = "0 10px 40px rgba(0, 0, 0, 0.3)";
     modalContent.style.width = "90%";
-    modalContent.style.maxWidth = "400px";
-    modalContent.style.minHeight = "200px"; // Added min-height
-    modalContent.style.margin = "auto";
-    modalContent.style.position = "relative";
+    modalContent.style.maxWidth = "800px";
+    modalContent.style.position = "absolute";
+    modalContent.style.top = "50%";
+    modalContent.style.left = "50%";
+    modalContent.style.transform = "translate(-50%, -50%)"; // Центрирование
     modalContent.style.display = "flex";
     modalContent.style.flexDirection = "column";
     modalContent.style.alignItems = "center";
-    modalContent.style.justifyContent = "center"; // Added justify-content
-    modalContent.style.transform = "translateY(-5%)"; // Slight upward offset for visual balance
+    modalContent.style.color = "#ffffff";
+
+    // Заголовок модального окна
+    const modalTitle = document.createElement("h2");
+    modalTitle.textContent = "Simple, Transparent Pricing";
+    modalTitle.style.fontSize = "1.8rem";
+    modalTitle.style.marginBottom = "24px";
+    modalTitle.style.fontWeight = "bold";
+
+    // Контейнер карточек подписок
+    const plansContainer = document.createElement("div");
+    plansContainer.style.display = "flex";
+    plansContainer.style.gap = "24px";
+    plansContainer.style.justifyContent = "center";
+    plansContainer.style.width = "100%";
+    plansContainer.style.flexWrap = "wrap"; // Для адаптивности на мобильных устройствах
+
+    // Карточки подписок
+    const testPlan = createPlanCard("Test Plan", "$2.99", [
+        "One full book generation",
+        "Basic formatting",
+        "Email support",
+    ]);
+
+    const basicPlan = createPlanCard("Basic Plan", "$15", [
+        "Ten full book generations",
+        "Advanced formatting",
+        "Priority support",
+        "Bulk generation",
+    ]);
+
+    plansContainer.appendChild(testPlan);
+    plansContainer.appendChild(basicPlan);
 
     // Кнопка закрытия (крестик)
     const closeButton = document.createElement("span");
@@ -788,72 +821,95 @@ function createPricingModal() {
     closeButton.style.right = "16px";
     closeButton.style.fontSize = "24px";
     closeButton.style.cursor = "pointer";
-    closeButton.style.color = "#555";
-
+    closeButton.style.color = "#ffffff";
     closeButton.onclick = () => {
-        document.body.removeChild(modal);
+        document.body.removeChild(modalOverlay);
     };
 
-    // Контейнер для подписок
-    const plansContainer = document.createElement("div");
-    plansContainer.style.width = "100%";
-    plansContainer.style.display = "flex";
-    plansContainer.style.flexDirection = "column";
-    plansContainer.style.gap = "16px";
-
-    // Функция для создания карточек подписки
-    function createPlan(name, price) {
-        const plan = document.createElement("div");
-        plan.style.background = "#f8f9fa";
-        plan.style.padding = "16px";
-        plan.style.borderRadius = "8px";
-        plan.style.textAlign = "center";
-        plan.style.boxShadow = "0 2px 6px rgba(0, 0, 0, 0.1)";
-        
-        const planTitle = document.createElement("h3");
-        planTitle.textContent = name;
-        planTitle.style.margin = "0 0 8px";
-        planTitle.style.fontSize = "18px";
-        planTitle.style.color = "#333";
-
-        const planPrice = document.createElement("p");
-        planPrice.textContent = price;
-        planPrice.style.margin = "0 0 12px";
-        planPrice.style.fontSize = "16px";
-        planPrice.style.color = "#666";
-
-        const subscribeButton = document.createElement("button");
-        subscribeButton.textContent = "Subscribe";
-        subscribeButton.style.width = "100%";
-        subscribeButton.style.padding = "10px";
-        subscribeButton.style.backgroundColor = "#1d4ed8";
-        subscribeButton.style.color = "white";
-        subscribeButton.style.border = "none";
-        subscribeButton.style.borderRadius = "6px";
-        subscribeButton.style.cursor = "pointer";
-        subscribeButton.style.fontSize = "14px";
-        subscribeButton.style.fontWeight = "500";
-
-        subscribeButton.onmouseover = () => subscribeButton.style.backgroundColor = "#1e40af";
-        subscribeButton.onmouseout = () => subscribeButton.style.backgroundColor = "#1d4ed8";
-
-        plan.appendChild(planTitle);
-        plan.appendChild(planPrice);
-        plan.appendChild(subscribeButton);
-
-        return plan;
-    }
-
-    // Добавляем карточки подписок
-    plansContainer.appendChild(createPlan("Start", "$14.99"));
-    plansContainer.appendChild(createPlan("Enterprise", "Custom"));
-
+    // Добавляем элементы в модальное окно
     modalContent.appendChild(closeButton);
+    modalContent.appendChild(modalTitle);
     modalContent.appendChild(plansContainer);
-    modal.appendChild(modalContent);
+    modalOverlay.appendChild(modalContent);
 
-    return modal;
-}
+    return modalOverlay;
+};
+
+// Функция создания карточки подписки
+const createPlanCard = (name, price, features) => {
+    const planCard = document.createElement("div");
+    planCard.style.background = "#334155";
+    planCard.style.padding = "24px";
+    planCard.style.borderRadius = "12px";
+    planCard.style.textAlign = "center";
+    planCard.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.2)";
+    planCard.style.width = "100%";
+    planCard.style.maxWidth = "320px";
+    planCard.style.display = "flex";
+    planCard.style.flexDirection = "column";
+    planCard.style.alignItems = "center";
+
+    const planTitle = document.createElement("h3");
+    planTitle.textContent = name;
+    planTitle.style.margin = "0 0 12px";
+    planTitle.style.fontSize = "1.4rem";
+    planTitle.style.fontWeight = "bold";
+    planTitle.style.color = "#ffffff";
+
+    const planPrice = document.createElement("p");
+    planPrice.textContent = price;
+    planPrice.style.margin = "0 0 8px";
+    planPrice.style.fontSize = "2rem";
+    planPrice.style.fontWeight = "bold";
+    planPrice.style.color = "#ffffff";
+
+    const credits = document.createElement("p");
+    credits.textContent = name === "Test Plan" ? "1 Credit" : "10 Credits";
+    credits.style.margin = "0 0 12px";
+    credits.style.fontSize = "1rem";
+    credits.style.color = "#a1a1aa";
+
+    const featuresList = document.createElement("ul");
+    featuresList.style.listStyle = "none";
+    featuresList.style.padding = "0";
+    featuresList.style.textAlign = "left";
+    featuresList.style.width = "100%";
+    featuresList.style.maxWidth = "240px";
+    featuresList.style.marginBottom = "16px";
+
+    features.forEach((feature) => {
+        const listItem = document.createElement("li");
+        listItem.textContent = `✔ ${feature}`;
+        listItem.style.fontSize = "1rem";
+        listItem.style.marginBottom = "6px";
+        listItem.style.color = "#b4b4b8";
+        featuresList.appendChild(listItem);
+    });
+
+    const subscribeButton = document.createElement("button");
+    subscribeButton.textContent = "Get Started";
+    subscribeButton.style.width = "100%";
+    subscribeButton.style.padding = "12px";
+    subscribeButton.style.background = "linear-gradient(90deg, #8b5cf6, #ec4899)";
+    subscribeButton.style.color = "white";
+    subscribeButton.style.border = "none";
+    subscribeButton.style.borderRadius = "8px";
+    subscribeButton.style.cursor = "pointer";
+    subscribeButton.style.fontSize = "1rem";
+    subscribeButton.style.fontWeight = "600";
+    subscribeButton.style.transition = "all 0.3s ease-in-out";
+
+    subscribeButton.onmouseover = () => (subscribeButton.style.opacity = "0.9");
+    subscribeButton.onmouseout = () => (subscribeButton.style.opacity = "1");
+
+    planCard.appendChild(planTitle);
+    planCard.appendChild(planPrice);
+    planCard.appendChild(credits);
+    planCard.appendChild(featuresList);
+    planCard.appendChild(subscribeButton);
+
+    return planCard;
+};
 
 
 
