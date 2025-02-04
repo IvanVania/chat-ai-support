@@ -750,6 +750,8 @@ const createHomePage = () => {
 
 
 const createPricingModal = () => {
+    if (!userData) return;
+
     // Основное затемненное покрытие
     const modalOverlay = document.createElement("div");
     modalOverlay.id = "pricing-modal";
@@ -775,7 +777,7 @@ const createPricingModal = () => {
     modalContent.style.position = "absolute";
     modalContent.style.top = "50%";
     modalContent.style.left = "50%";
-    modalContent.style.transform = "translate(-50%, -50%)"; // Центрирование
+    modalContent.style.transform = "translate(-50%, -50%)";
     modalContent.style.display = "flex";
     modalContent.style.flexDirection = "column";
     modalContent.style.alignItems = "center";
@@ -796,18 +798,21 @@ const createPricingModal = () => {
     plansContainer.style.width = "100%";
     plansContainer.style.flexWrap = "wrap"; // Для адаптивности на мобильных устройствах
 
+    // Определяем текущий план пользователя
+    const currentPlan = userData.subscription_name || null;
+
     // Карточки подписок
     const startPlan = createPlanCard("Start", "$14.99/month", [
         "Up to 100 conversations per month",
         "Standard features",
         "Basic support",
-    ]);
+    ], currentPlan === "Start");
 
     const enterprisePlan = createPlanCard("Enterprise", "Custom", [
         "For large businesses with high data volume",
         "Advanced features & integrations",
         "Dedicated support & account management",
-    ]);
+    ], currentPlan === "Enterprise");
 
     plansContainer.appendChild(startPlan);
     plansContainer.appendChild(enterprisePlan);
@@ -834,8 +839,8 @@ const createPricingModal = () => {
     return modalOverlay;
 };
 
-// Функция создания карточки подписки
-const createPlanCard = (name, price, features) => {
+// Функция создания карточки подписки с проверкой текущего плана
+const createPlanCard = (name, price, features, isActive) => {
     const planCard = document.createElement("div");
     planCard.style.background = "#334155";
     planCard.style.padding = "24px";
@@ -847,6 +852,11 @@ const createPlanCard = (name, price, features) => {
     planCard.style.display = "flex";
     planCard.style.flexDirection = "column";
     planCard.style.alignItems = "center";
+
+    // Если текущий план активен, добавляем красную рамку
+    if (isActive) {
+        planCard.style.border = "5px solid #ff4d4d";
+    }
 
     const planTitle = document.createElement("h3");
     planTitle.textContent = name;
@@ -879,29 +889,59 @@ const createPlanCard = (name, price, features) => {
         featuresList.appendChild(listItem);
     });
 
-    const subscribeButton = document.createElement("button");
-    subscribeButton.textContent = "Get Started";
-    subscribeButton.style.width = "100%";
-    subscribeButton.style.padding = "12px";
-    subscribeButton.style.background = "linear-gradient(90deg, #8b5cf6, #ec4899)";
-    subscribeButton.style.color = "white";
-    subscribeButton.style.border = "none";
-    subscribeButton.style.borderRadius = "8px";
-    subscribeButton.style.cursor = "pointer";
-    subscribeButton.style.fontSize = "1rem";
-    subscribeButton.style.fontWeight = "600";
-    subscribeButton.style.transition = "all 0.3s ease-in-out";
+    if (!isActive) {
+        // Кнопка подписки (только если это не текущий план)
+        const subscribeButton = document.createElement("button");
+        subscribeButton.textContent = "Get Started";
+        subscribeButton.style.width = "100%";
+        subscribeButton.style.padding = "12px";
+        subscribeButton.style.background = "linear-gradient(90deg, #8b5cf6, #ec4899)";
+        subscribeButton.style.color = "white";
+        subscribeButton.style.border = "none";
+        subscribeButton.style.borderRadius = "8px";
+        subscribeButton.style.cursor = "pointer";
+        subscribeButton.style.fontSize = "1rem";
+        subscribeButton.style.fontWeight = "600";
+        subscribeButton.style.transition = "all 0.3s ease-in-out";
 
-    subscribeButton.onmouseover = () => (subscribeButton.style.opacity = "0.9");
-    subscribeButton.onmouseout = () => (subscribeButton.style.opacity = "1");
+        subscribeButton.onmouseover = () => (subscribeButton.style.opacity = "0.9");
+        subscribeButton.onmouseout = () => (subscribeButton.style.opacity = "1");
 
-    planCard.appendChild(planTitle);
-    planCard.appendChild(planPrice);
-    planCard.appendChild(featuresList);
-    planCard.appendChild(subscribeButton);
+        planCard.appendChild(planTitle);
+        planCard.appendChild(planPrice);
+        planCard.appendChild(featuresList);
+        planCard.appendChild(subscribeButton);
+    } else {
+        // Кнопка отмены подписки (если это текущий план)
+        const cancelButton = document.createElement("button");
+        cancelButton.textContent = "Cancel Subscription";
+        cancelButton.style.width = "100%";
+        cancelButton.style.padding = "12px";
+        cancelButton.style.background = "#ff4d4d";
+        cancelButton.style.color = "white";
+        cancelButton.style.border = "none";
+        cancelButton.style.borderRadius = "8px";
+        cancelButton.style.cursor = "pointer";
+        cancelButton.style.fontSize = "1rem";
+        cancelButton.style.fontWeight = "600";
+        cancelButton.style.transition = "all 0.3s ease-in-out";
+
+        cancelButton.onmouseover = () => (cancelButton.style.opacity = "0.9");
+        cancelButton.onmouseout = () => (cancelButton.style.opacity = "1");
+
+        cancelButton.onclick = () => {
+            alert("Your subscription will be canceled.");
+        };
+
+        planCard.appendChild(planTitle);
+        planCard.appendChild(planPrice);
+        planCard.appendChild(featuresList);
+        planCard.appendChild(cancelButton);
+    }
 
     return planCard;
 };
+
 
 
 
