@@ -806,13 +806,13 @@ const createPricingModal = () => {
         "Up to 100 conversations per month",
         "Standard features",
         "Basic support",
-    ], currentPlan === "Start", currentPlan !== null);
+    ], currentPlan === "Start", currentPlan);
 
     const enterprisePlan = createPlanCard("Enterprise", "Custom", [
         "For large businesses with high data volume",
         "Advanced features & integrations",
         "Dedicated support & account management",
-    ], currentPlan === "Enterprise", currentPlan !== null);
+    ], currentPlan === "Enterprise", currentPlan);
 
     plansContainer.appendChild(startPlan);
     plansContainer.appendChild(enterprisePlan);
@@ -840,7 +840,7 @@ const createPricingModal = () => {
 };
 
 // Функция создания карточки подписки
-const createPlanCard = (name, price, features, isActive, hasActiveSubscription) => {
+const createPlanCard = (name, price, features, isActive, activePlan) => {
     const planCard = document.createElement("div");
     planCard.style.background = "#334155";
     planCard.style.padding = "24px";
@@ -915,9 +915,9 @@ const createPlanCard = (name, price, features, isActive, hasActiveSubscription) 
         planCard.appendChild(planPrice);
         planCard.appendChild(featuresList);
         planCard.appendChild(cancelButton);
-    }
-    // Кнопка подписки (если подписка отсутствует и это НЕ текущий план)
-    else if (!hasActiveSubscription) {
+    } 
+    // Кнопка подписки (если подписка отсутствует, но НЕ у активного плана)
+    else if (!isActive && !activePlan) {
         const subscribeButton = document.createElement("button");
         subscribeButton.textContent = "Get Started";
         subscribeButton.style.width = "100%";
@@ -938,6 +938,10 @@ const createPlanCard = (name, price, features, isActive, hasActiveSubscription) 
         planCard.appendChild(planPrice);
         planCard.appendChild(featuresList);
         planCard.appendChild(subscribeButton);
+    } else {
+        planCard.appendChild(planTitle);
+        planCard.appendChild(planPrice);
+        planCard.appendChild(featuresList);
     }
 
     return planCard;
