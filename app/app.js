@@ -783,7 +783,7 @@ const createPricingModal = () => {
 
     // Заголовок модального окна
     const modalTitle = document.createElement("h2");
-    modalTitle.textContent = "Simple, Transparent Pricing";
+    modalTitle.textContent = "Choose Your Plan";
     modalTitle.style.fontSize = "1.8rem";
     modalTitle.style.marginBottom = "24px";
     modalTitle.style.fontWeight = "bold";
@@ -797,21 +797,20 @@ const createPricingModal = () => {
     plansContainer.style.flexWrap = "wrap"; // Для адаптивности на мобильных устройствах
 
     // Карточки подписок
-    const testPlan = createPlanCard("Test Plan", "$2.99", [
-        "One full book generation",
-        "Basic formatting",
-        "Email support",
+    const startPlan = createPlanCard("Start", "$14.99/month", [
+        "Up to 100 conversations per month",
+        "Standard features",
+        "Basic support",
     ]);
 
-    const basicPlan = createPlanCard("Basic Plan", "$15", [
-        "Ten full book generations",
-        "Advanced formatting",
-        "Priority support",
-        "Bulk generation",
+    const enterprisePlan = createPlanCard("Enterprise", "Custom", [
+        "For large businesses with high data volume",
+        "Advanced features & integrations",
+        "Dedicated support & account management",
     ]);
 
-    plansContainer.appendChild(testPlan);
-    plansContainer.appendChild(basicPlan);
+    plansContainer.appendChild(startPlan);
+    plansContainer.appendChild(enterprisePlan);
 
     // Кнопка закрытия (крестик)
     const closeButton = document.createElement("span");
@@ -863,12 +862,6 @@ const createPlanCard = (name, price, features) => {
     planPrice.style.fontWeight = "bold";
     planPrice.style.color = "#ffffff";
 
-    const credits = document.createElement("p");
-    credits.textContent = name === "Test Plan" ? "1 Credit" : "10 Credits";
-    credits.style.margin = "0 0 12px";
-    credits.style.fontSize = "1rem";
-    credits.style.color = "#a1a1aa";
-
     const featuresList = document.createElement("ul");
     featuresList.style.listStyle = "none";
     featuresList.style.padding = "0";
@@ -904,12 +897,12 @@ const createPlanCard = (name, price, features) => {
 
     planCard.appendChild(planTitle);
     planCard.appendChild(planPrice);
-    planCard.appendChild(credits);
     planCard.appendChild(featuresList);
     planCard.appendChild(subscribeButton);
 
     return planCard;
 };
+
 
 
 
