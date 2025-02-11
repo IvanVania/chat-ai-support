@@ -1643,30 +1643,30 @@ const createSettingsPage = () => {
 //             break;
 //     }
 // };
-const renderPage = (pageName) => {
-    state.currentPage = pageName;
-    const mainContent = document.getElementById('main-content');
-    mainContent.innerHTML = '';
+// const renderPage = (pageName) => {
+//     state.currentPage = pageName;
+//     const mainContent = document.getElementById('main-content');
+//     mainContent.innerHTML = '';
     
-    let newPage;
+//     let newPage;
     
-    switch(pageName) {
-        case 'home':
-            newPage = createHomePage();
-            break;
-        case 'table':
-            newPage = createTablePage();
-            break;
-        case 'settings':
-            newPage = createSettingsPage();
-            break;
-    }
+//     switch(pageName) {
+//         case 'home':
+//             newPage = createHomePage();
+//             break;
+//         case 'table':
+//             newPage = createTablePage();
+//             break;
+//         case 'settings':
+//             newPage = createSettingsPage();
+//             break;
+//     }
 
-    if (newPage) {
-        mainContent.appendChild(newPage);
-        updateUI(); // Обновляем UI после рендера
-    }
-};
+//     if (newPage) {
+//         mainContent.appendChild(newPage);
+//         updateUI(); // Обновляем UI после рендера
+//     }
+// };
 
 //
 // ===============================
