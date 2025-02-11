@@ -413,44 +413,37 @@ function createLoadingModal() {
     loadingModal.style.justifyContent = "center";
     loadingModal.style.alignItems = "center";
 
-    const loadingContainer = createSpinnerContainer();
-    const styleTag = createSpinnerAnimation();
-    
+    const loadingContainer = document.createElement("div");
+    loadingContainer.style.width = "80px";
+    loadingContainer.style.height = "80px";
+    loadingContainer.style.borderRadius = "50%";
+    loadingContainer.style.border = "6px solid rgba(255, 255, 255, 0.3)";
+    loadingContainer.style.borderTop = "6px solid white";
+    loadingContainer.style.animation = "spin 1s linear infinite";
+
     loadingModal.appendChild(loadingContainer);
     document.body.appendChild(loadingModal);
-    document.head.appendChild(styleTag);
-}
 
-function createSpinnerContainer() {
-    const spinner = document.createElement("div");
-    spinner.style.width = "80px";
-    spinner.style.height = "80px";
-    spinner.style.borderRadius = "50%";
-    spinner.style.border = "6px solid rgba(255, 255, 255, 0.3)";
-    spinner.style.borderTop = "6px solid white";
-    spinner.style.animation = "spin 1s linear infinite";
-    return spinner;
-}
-
-function createSpinnerAnimation() {
     const styleTag = document.createElement("style");
     styleTag.textContent = `
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
-        }
-    `;
-    return styleTag;
-}
+        }`;
+    document.head.appendChild(styleTag);
 
-function showLoadingModal() {
-    const modal = document.getElementById("loading-modal");
-    if (modal) modal.style.display = "flex";
-}
+    function showLoadingModal() {
+        loadingModal.style.display = "flex";
+    }
 
-function hideLoadingModal() {
-    const modal = document.getElementById("loading-modal");
-    if (modal) modal.style.display = "none";
+    function hideLoadingModal() {
+        loadingModal.style.display = "none";
+    }
+
+    return {
+        show: showLoadingModal,
+        hide: hideLoadingModal
+    };
 }
 
 
