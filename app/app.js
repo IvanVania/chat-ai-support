@@ -399,35 +399,26 @@ function createMainContent() {
 
 // Создание модального окна загрузки (ГЛОБАЛЬНО, ДОБАВЛЯТЬ ОДИН РАЗ)
 function createLoadingModal() {
-    const loadingModal = createModalContainer();
+    const loadingModal = document.createElement("div");
+    loadingModal.id = "loading-modal";
+    loadingModal.style.display = "none";
+    loadingModal.style.position = "fixed";
+    loadingModal.style.top = "0";
+    loadingModal.style.left = "0";
+    loadingModal.style.width = "100%";
+    loadingModal.style.height = "100%";
+    loadingModal.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+    loadingModal.style.zIndex = "2000";
+    loadingModal.style.display = "flex";
+    loadingModal.style.justifyContent = "center";
+    loadingModal.style.alignItems = "center";
+
     const loadingContainer = createSpinnerContainer();
     const styleTag = createSpinnerAnimation();
     
     loadingModal.appendChild(loadingContainer);
     document.body.appendChild(loadingModal);
     document.head.appendChild(styleTag);
-    
-    return {
-        show: () => showLoadingModal(loadingModal),
-        hide: () => hideLoadingModal(loadingModal)
-    };
-}
-
-function createModalContainer() {
-    const modal = document.createElement("div");
-    modal.id = "loading-modal";
-    modal.style.display = "none";
-    modal.style.position = "fixed";
-    modal.style.top = "0";
-    modal.style.left = "0";
-    modal.style.width = "100%";
-    modal.style.height = "100%";
-    modal.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
-    modal.style.zIndex = "2000";
-    modal.style.display = "flex";
-    modal.style.justifyContent = "center";
-    modal.style.alignItems = "center";
-    return modal;
 }
 
 function createSpinnerContainer() {
@@ -452,12 +443,14 @@ function createSpinnerAnimation() {
     return styleTag;
 }
 
-function showLoadingModal(modal) {
-    modal.style.display = "flex";
+function showLoadingModal() {
+    const modal = document.getElementById("loading-modal");
+    if (modal) modal.style.display = "flex";
 }
 
-function hideLoadingModal(modal) {
-    modal.style.display = "none";
+function hideLoadingModal() {
+    const modal = document.getElementById("loading-modal");
+    if (modal) modal.style.display = "none";
 }
 
 
