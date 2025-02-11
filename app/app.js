@@ -265,103 +265,215 @@ const createNavItem = (icon, isActive = false) => {
 
 
 
-// Create sidebar with navigation
-const createSidebar = () => {
-    const sidebar = document.createElement("div");
-    sidebar.style.width = "64px";
-    sidebar.style.backgroundColor = "#1a1f2b";
-    sidebar.style.height = "100vh";
-    sidebar.style.position = "fixed";
-    sidebar.style.left = "0";
-    sidebar.style.top = "0";
-    sidebar.style.display = "flex";
-    sidebar.style.flexDirection = "column";
-    sidebar.style.padding = "16px 0";
-    sidebar.style.zIndex = "1000";
+// // Create sidebar with navigation
+// const createSidebar = () => {
+//     const sidebar = document.createElement("div");
+//     sidebar.style.width = "64px";
+//     sidebar.style.backgroundColor = "#1a1f2b";
+//     sidebar.style.height = "100vh";
+//     sidebar.style.position = "fixed";
+//     sidebar.style.left = "0";
+//     sidebar.style.top = "0";
+//     sidebar.style.display = "flex";
+//     sidebar.style.flexDirection = "column";
+//     sidebar.style.padding = "16px 0";
+//     sidebar.style.zIndex = "1000";
 
-    const navSection = document.createElement("div");
-    navSection.style.display = "flex";
-    navSection.style.flexDirection = "column";
-    navSection.style.gap = "8px";
-    navSection.style.padding = "0 8px";
-    navSection.style.flex = "1";
+//     const navSection = document.createElement("div");
+//     navSection.style.display = "flex";
+//     navSection.style.flexDirection = "column";
+//     navSection.style.gap = "8px";
+//     navSection.style.padding = "0 8px";
+//     navSection.style.flex = "1";
 
-    const createNavItem = (svg, isActive) => {
-        const item = document.createElement("div");
-        item.innerHTML = svg;
-        item.style.display = "flex";
-        item.style.justifyContent = "center";
-        item.style.alignItems = "center";
-        item.style.width = "48px";
-        item.style.height = "48px";
-        item.style.borderRadius = "8px";
-        item.style.cursor = "pointer";
-        item.style.backgroundColor = isActive ? "rgba(255, 255, 255, 0.2)" : "transparent";
-        item.querySelector("svg").style.stroke = "white"; // Белый цвет иконок
-        return item;
-    };
+//     const createNavItem = (svg, isActive) => {
+//         const item = document.createElement("div");
+//         item.innerHTML = svg;
+//         item.style.display = "flex";
+//         item.style.justifyContent = "center";
+//         item.style.alignItems = "center";
+//         item.style.width = "48px";
+//         item.style.height = "48px";
+//         item.style.borderRadius = "8px";
+//         item.style.cursor = "pointer";
+//         item.style.backgroundColor = isActive ? "rgba(255, 255, 255, 0.2)" : "transparent";
+//         item.querySelector("svg").style.stroke = "white"; // Белый цвет иконок
+//         return item;
+//     };
 
-    const updateNavItems = () => {
-        homeIcon.style.backgroundColor = state.currentPage === 'home' ? "rgba(255, 255, 255, 0.2)" : "transparent";
-        tableIcon.style.backgroundColor = state.currentPage === 'table' ? "rgba(255, 255, 255, 0.2)" : "transparent";
-        settingsIcon.style.backgroundColor = state.currentPage === 'settings' ? "rgba(255, 255, 255, 0.2)" : "transparent";
-    };
+//     const updateNavItems = () => {
+//         homeIcon.style.backgroundColor = state.currentPage === 'home' ? "rgba(255, 255, 255, 0.2)" : "transparent";
+//         tableIcon.style.backgroundColor = state.currentPage === 'table' ? "rgba(255, 255, 255, 0.2)" : "transparent";
+//         settingsIcon.style.backgroundColor = state.currentPage === 'settings' ? "rgba(255, 255, 255, 0.2)" : "transparent";
+//     };
 
-    const homeIcon = createNavItem(`
-        <svg viewBox="0 0 24 24" width="24" height="24" fill="none">
-            <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-        </svg>
-    `, state.currentPage === 'home');
-    homeIcon.onclick = () => { renderPage('home'); updateNavItems(); };
+//     const homeIcon = createNavItem(`
+//         <svg viewBox="0 0 24 24" width="24" height="24" fill="none">
+//             <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+//         </svg>
+//     `, state.currentPage === 'home');
+//     homeIcon.onclick = () => { renderPage('home'); updateNavItems(); };
 
-    const tableIcon = createNavItem(`
-        <svg viewBox="0 0 24 24" width="24" height="24" fill="none">
-            <path d="M4 6h16M4 12h16M4 18h16"/>
-        </svg>
-    `, state.currentPage === 'table');
-    tableIcon.onclick = () => { renderPage('table'); updateNavItems(); };
+//     const tableIcon = createNavItem(`
+//         <svg viewBox="0 0 24 24" width="24" height="24" fill="none">
+//             <path d="M4 6h16M4 12h16M4 18h16"/>
+//         </svg>
+//     `, state.currentPage === 'table');
+//     tableIcon.onclick = () => { renderPage('table'); updateNavItems(); };
 
-    const settingsIcon = createNavItem(`
-        <svg viewBox="0 0 24 24" width="24" height="24" fill="none">
-            <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-            <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-        </svg>
-    `, state.currentPage === 'settings');
-    settingsIcon.onclick = () => { renderPage('settings'); updateNavItems(); };
-
-
-
-
-
-    const logoutSection = document.createElement("div");
-    logoutSection.style.padding = "8px";
-    logoutSection.style.paddingBottom = "16px";
-
-    const logoutIcon = createNavItem(`
-        <svg viewBox="0 0 24 24" width="24" height="24" fill="none">
-            <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-        </svg>
-    `, false);
-    logoutIcon.onclick = () => {
-        if (confirm('Are you sure you want to logout?')) {
-            alert('Logged out successfully');
-        }
-    };
+//     const settingsIcon = createNavItem(`
+//         <svg viewBox="0 0 24 24" width="24" height="24" fill="none">
+//             <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+//             <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+//         </svg>
+//     `, state.currentPage === 'settings');
+//     settingsIcon.onclick = () => { renderPage('settings'); updateNavItems(); };
 
 
 
 
-    navSection.appendChild(homeIcon);
-    navSection.appendChild(tableIcon);
-    navSection.appendChild(settingsIcon);
-    logoutSection.appendChild(logoutIcon);
 
-    sidebar.appendChild(navSection);
-    sidebar.appendChild(logoutSection);
-    return sidebar;
-};
+//     const logoutSection = document.createElement("div");
+//     logoutSection.style.padding = "8px";
+//     logoutSection.style.paddingBottom = "16px";
+
+//     const logoutIcon = createNavItem(`
+//         <svg viewBox="0 0 24 24" width="24" height="24" fill="none">
+//             <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+//         </svg>
+//     `, false);
+//     logoutIcon.onclick = () => {
+//         if (confirm('Are you sure you want to logout?')) {
+//             alert('Logged out successfully');
+//         }
+//     };
 
 
+
+
+//     navSection.appendChild(homeIcon);
+//     navSection.appendChild(tableIcon);
+//     navSection.appendChild(settingsIcon);
+//     logoutSection.appendChild(logoutIcon);
+
+//     sidebar.appendChild(navSection);
+//     sidebar.appendChild(logoutSection);
+//     return sidebar;
+// };
+
+function createSidebar() {
+  const sidebar = createSidebarContainer();
+  const navSection = createNavSection();
+  const logoutSection = createLogoutSection();
+
+  sidebar.appendChild(navSection);
+  sidebar.appendChild(logoutSection);
+  return sidebar;
+}
+
+function createSidebarContainer() {
+  const sidebar = document.createElement("div");
+  sidebar.style.width = "64px";
+  sidebar.style.backgroundColor = "#1a1f2b";
+  sidebar.style.height = "100vh";
+  sidebar.style.position = "fixed";
+  sidebar.style.left = "0";
+  sidebar.style.top = "0";
+  sidebar.style.display = "flex";
+  sidebar.style.flexDirection = "column";
+  sidebar.style.padding = "16px 0";
+  sidebar.style.zIndex = "1000";
+  return sidebar;
+}
+
+function createNavSection() {
+  const navSection = document.createElement("div");
+  navSection.style.display = "flex";
+  navSection.style.flexDirection = "column";
+  navSection.style.gap = "8px";
+  navSection.style.padding = "0 8px";
+  navSection.style.flex = "1";
+
+  const homeIcon = createNavItem(getHomeSvg(), state.currentPage === 'home');
+  const tableIcon = createNavItem(getTableSvg(), state.currentPage === 'table');
+  const settingsIcon = createNavItem(getSettingsSvg(), state.currentPage === 'settings');
+
+  homeIcon.onclick = () => { updateNavigation('home', [homeIcon, tableIcon, settingsIcon]); };
+  tableIcon.onclick = () => { updateNavigation('table', [homeIcon, tableIcon, settingsIcon]); };
+  settingsIcon.onclick = () => { updateNavigation('settings', [homeIcon, tableIcon, settingsIcon]); };
+
+  navSection.appendChild(homeIcon);
+  navSection.appendChild(tableIcon);
+  navSection.appendChild(settingsIcon);
+
+  return navSection;
+}
+
+function createNavItem(svg, isActive) {
+  const item = document.createElement("div");
+  item.innerHTML = svg;
+  item.style.display = "flex";
+  item.style.justifyContent = "center";
+  item.style.alignItems = "center";
+  item.style.width = "48px";
+  item.style.height = "48px";
+  item.style.borderRadius = "8px";
+  item.style.cursor = "pointer";
+  item.style.backgroundColor = isActive ? "rgba(255, 255, 255, 0.2)" : "transparent";
+  item.querySelector("svg").style.stroke = "white";
+  return item;
+}
+
+function createLogoutSection() {
+  const logoutSection = document.createElement("div");
+  logoutSection.style.padding = "8px";
+  logoutSection.style.paddingBottom = "16px";
+
+  const logoutIcon = createNavItem(getLogoutSvg(), false);
+  logoutIcon.onclick = handleLogout;
+  
+  logoutSection.appendChild(logoutIcon);
+  return logoutSection;
+}
+
+function updateNavigation(page, items) {
+  renderPage(page);
+  items.forEach(item => {
+    item.style.backgroundColor = state.currentPage === page ? "rgba(255, 255, 255, 0.2)" : "transparent";
+  });
+}
+
+function handleLogout() {
+  if (confirm('Are you sure you want to logout?')) {
+    alert('Logged out successfully');
+  }
+}
+
+// SVG helper functions
+function getHomeSvg() {
+  return `<svg viewBox="0 0 24 24" width="24" height="24" fill="none">
+    <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+  </svg>`;
+}
+
+function getTableSvg() {
+  return `<svg viewBox="0 0 24 24" width="24" height="24" fill="none">
+    <path d="M4 6h16M4 12h16M4 18h16"/>
+  </svg>`;
+}
+
+function getSettingsSvg() {
+  return `<svg viewBox="0 0 24 24" width="24" height="24" fill="none">
+    <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+    <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+  </svg>`;
+}
+
+function getLogoutSvg() {
+  return `<svg viewBox="0 0 24 24" width="24" height="24" fill="none">
+    <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+  </svg>`;
+}
 
 
 
