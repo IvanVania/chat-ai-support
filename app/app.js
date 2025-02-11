@@ -241,13 +241,38 @@ function createNavSection() {
     navSection.style.padding = "0 8px";
     navSection.style.flex = "1";
 
+    // const homeIcon = createNavItem(getHomeSvg(), state.currentPage === 'home');
+    // const tableIcon = createNavItem(getTableSvg(), state.currentPage === 'table');
+    // const settingsIcon = createNavItem(getSettingsSvg(), state.currentPage === 'settings');
+
+    // homeIcon.onclick = () => { renderPage('home'); updateNavItems([homeIcon, tableIcon, settingsIcon]); };
+    // tableIcon.onclick = () => { renderPage('table'); updateNavItems([homeIcon, tableIcon, settingsIcon]); };
+    // settingsIcon.onclick = () => { renderPage('settings'); updateNavItems([homeIcon, tableIcon, settingsIcon]); };
     const homeIcon = createNavItem(getHomeSvg(), state.currentPage === 'home');
     const tableIcon = createNavItem(getTableSvg(), state.currentPage === 'table');
     const settingsIcon = createNavItem(getSettingsSvg(), state.currentPage === 'settings');
 
-    homeIcon.onclick = () => { renderPage('home'); updateNavItems([homeIcon, tableIcon, settingsIcon]); };
-    tableIcon.onclick = () => { renderPage('table'); updateNavItems([homeIcon, tableIcon, settingsIcon]); };
-    settingsIcon.onclick = () => { renderPage('settings'); updateNavItems([homeIcon, tableIcon, settingsIcon]); };
+    const navItems = [homeIcon, tableIcon, settingsIcon];
+
+    homeIcon.onclick = () => { 
+        state.currentPage = 'home';
+        renderPage('home'); 
+        updateNavItems(navItems);
+    };
+    
+    tableIcon.onclick = () => { 
+        state.currentPage = 'table';
+        renderPage('table'); 
+        updateNavItems(navItems);
+    };
+    
+    settingsIcon.onclick = () => { 
+        state.currentPage = 'settings';
+        renderPage('settings'); 
+        updateNavItems(navItems);
+    };
+
+
 
     navSection.appendChild(homeIcon);
     navSection.appendChild(tableIcon);
@@ -361,7 +386,7 @@ function getLogoutSvg() {
 
 
 
-// Create main content area
+// Create main content area ---- пустой контейнер
 function createMainContent() {
     const mainContent = document.createElement("div");
     mainContent.id = "main-content";
@@ -447,7 +472,7 @@ function createMainContent() {
 // }
 
 
-// Создание модального окна загрузки (ГЛОБАЛЬНО, ДОБАВЛЯТЬ ОДИН РАЗ)
+// Создание модального окна загрузки (ГЛОБАЛЬНО, ДОБАВЛЯТЬ ОДИН РАЗ) //initial loding
 const loadingModal = document.createElement("div");
 loadingModal.id = "loading-modal";
 loadingModal.style.display = "none";
@@ -756,6 +781,9 @@ const createSnippetSection = () => {
     return snippetSection;
 };
 
+
+
+//HOME - screen
 // Создание главной страницы
 const createHomePage = () => {
     const home = document.createElement("div");
@@ -1615,30 +1643,30 @@ const createSettingsPage = () => {
 //             break;
 //     }
 // };
-// const renderPage = (pageName) => {
-//     state.currentPage = pageName;
-//     const mainContent = document.getElementById('main-content');
-//     mainContent.innerHTML = '';
+const renderPage = (pageName) => {
+    state.currentPage = pageName;
+    const mainContent = document.getElementById('main-content');
+    mainContent.innerHTML = '';
     
-//     let newPage;
+    let newPage;
     
-//     switch(pageName) {
-//         case 'home':
-//             newPage = createHomePage();
-//             break;
-//         case 'table':
-//             newPage = createTablePage();
-//             break;
-//         case 'settings':
-//             newPage = createSettingsPage();
-//             break;
-//     }
+    switch(pageName) {
+        case 'home':
+            newPage = createHomePage();
+            break;
+        case 'table':
+            newPage = createTablePage();
+            break;
+        case 'settings':
+            newPage = createSettingsPage();
+            break;
+    }
 
-//     if (newPage) {
-//         mainContent.appendChild(newPage);
-//         updateUI(); // Обновляем UI после рендера
-//     }
-// };
+    if (newPage) {
+        mainContent.appendChild(newPage);
+        updateUI(); // Обновляем UI после рендера
+    }
+};
 
 //
 // ===============================
