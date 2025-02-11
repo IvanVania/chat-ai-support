@@ -1014,11 +1014,272 @@ const createPlanCard = (name, price, features, isActive, activePlan) => {
 
 
 //TABLES DATA PAGE
-const createTablePage = () => {
+// const createTablePage = () => {
+//     const tableContainer = document.createElement("div");
+//     tableContainer.style.display = "flex";
+//     tableContainer.style.flexDirection = "column";
+//     tableContainer.style.width = "100%";
+//     tableContainer.style.height = "100vh";
+//     tableContainer.style.padding = "20px";
+//     tableContainer.style.boxSizing = "border-box";
+//     tableContainer.style.alignItems = "center";
+//     tableContainer.style.justifyContent = "center";
+//     tableContainer.style.backgroundColor = "#f8f9fa";
+
+//     // Title
+//     const title = document.createElement("h1");
+//     title.textContent = "Table Management";
+//     title.style.marginBottom = "20px";
+//     title.style.fontSize = "24px";
+//     title.style.color = "#333";
+//     title.style.fontFamily = "'Segoe UI', Arial, sans-serif";
+
+//     // Table Wrapper
+//     const tableWrapper = document.createElement("div");
+//     tableWrapper.style.width = "90%";
+//     tableWrapper.style.height = "70vh";
+//     tableWrapper.style.overflowY = "auto";
+//     tableWrapper.style.backgroundColor = "white";
+//     tableWrapper.style.boxShadow = "0 2px 6px rgba(0,0,0,0.15)";
+//     tableWrapper.style.borderRadius = "8px";
+
+//     // Initialize table data from userData if available
+//     if (!state.tableData) {
+//         state.tableData = [];
+//         if (userData && userData.data_document_url) {
+//             state.tableData = Array.isArray(userData.data_document_url) 
+//                 ? userData.data_document_url 
+//                 : [userData.data_document_url];
+//         }
+//     }
+
+//     // Table
+//     const table = document.createElement("table");
+//     table.style.width = "100%";
+//     table.style.borderCollapse = "collapse";
+//     table.style.fontFamily = "'Segoe UI', Arial, sans-serif";
+//     table.style.fontSize = "14px";
+
+//     const updateTable = () => {
+//         table.innerHTML = `
+//             <thead>
+//                 <tr>
+//                     <th style="
+//                         position: sticky;
+//                         top: 0;
+//                         background-color: #f1f3f4;
+//                         color: #333;
+//                         font-weight: 500;
+//                         text-align: left;
+//                         padding: 12px;
+//                         border-bottom: 2px solid #ddd;
+//                         white-space: nowrap;
+//                     ">URL</th>
+//                     <th style="
+//                         position: sticky;
+//                         top: 0;
+//                         background-color: #f1f3f4;
+//                         color: #333;
+//                         font-weight: 500;
+//                         padding: 12px;
+//                         border-bottom: 2px solid #ddd;
+//                         width: 100px;
+//                         text-align: center;
+//                     ">Actions</th>
+//                 </tr>
+//             </thead>
+//             <tbody>
+//                 ${state.tableData.map((row, index) => `
+//                     <tr style="
+//                         background-color: ${index % 2 === 0 ? '#ffffff' : '#f8f9fa'};
+//                         transition: background-color 0.2s;
+//                         border-bottom: 1px solid #e0e0e0;
+//                     "
+//                     onmouseover="this.style.backgroundColor='#f5f5f5'"
+//                     onmouseout="this.style.backgroundColor='${index % 2 === 0 ? '#ffffff' : '#f8f9fa'}'">
+//                         <td style="position: relative; border-right: 1px solid #e0e0e0;">
+//                             <input type="text" 
+//                                 value="${row}" 
+//                                 oninput="updateRow(${index}, this.value)" 
+//                                 style="
+//                                     width: 100%;
+//                                     padding: 12px;
+//                                     border: none;
+//                                     outline: none;
+//                                     font-size: 14px;
+//                                     background: transparent;
+//                                     font-family: inherit;
+//                                 "
+//                                 onfocus="this.parentElement.style.boxShadow='inset 0 0 0 2px #1a73e8'"
+//                                 onblur="this.parentElement.style.boxShadow='none'"
+//                             >
+//                         </td>
+//                         <td style="padding: 8px; text-align: center;">
+//                             <button onclick="removeRow(${index})" style="
+//                                 background-color: transparent;
+//                                 color: #666;
+//                                 border: 1px solid #ddd;
+//                                 padding: 6px 12px;
+//                                 cursor: pointer;
+//                                 font-size: 13px;
+//                                 border-radius: 4px;
+//                                 transition: all 0.2s;
+//                                 width: 80px;
+//                             "
+//                             onmouseover="this.style.backgroundColor='#dc3545'; this.style.color='white'; this.style.borderColor='#dc3545'"
+//                             onmouseout="this.style.backgroundColor='transparent'; this.style.color='#666'; this.style.borderColor='#ddd'"
+//                             >
+//                                 Delete
+//                             </button>
+//                         </td>
+//                     </tr>
+//                 `).join('')}
+//             </tbody>
+//         `;
+//     };
+
+//     // State functions
+//     window.updateRow = (index, value) => {
+//         state.tableData[index] = value;
+//     };
+
+//     window.removeRow = (index) => {
+//         state.tableData.splice(index, 1);
+//         updateTable();
+//     };
+
+//     // Add Row Button
+//     const addRowButton = document.createElement("button");
+//     addRowButton.textContent = "+ Add Row";
+//     addRowButton.style.marginTop = "20px";
+//     addRowButton.style.padding = "10px 20px";
+//     addRowButton.style.backgroundColor = "#fff";
+//     addRowButton.style.color = "#1a73e8";
+//     addRowButton.style.border = "1px solid #1a73e8";
+//     addRowButton.style.borderRadius = "4px";
+//     addRowButton.style.cursor = "pointer";
+//     addRowButton.style.fontSize = "14px";
+//     addRowButton.style.fontWeight = "500";
+//     addRowButton.style.transition = "all 0.2s";
+
+//     addRowButton.onmouseover = () => {
+//         addRowButton.style.backgroundColor = "#1a73e8";
+//         addRowButton.style.color = "#fff";
+//     };
+
+//     addRowButton.onmouseout = () => {
+//         addRowButton.style.backgroundColor = "#fff";
+//         addRowButton.style.color = "#1a73e8";
+//     };
+
+//     addRowButton.onclick = () => {
+//         state.tableData.push("");
+//         updateTable();
+//     };
+
+//     // Save Button
+//     const saveButton = document.createElement("button");
+//     saveButton.textContent = "Save Changes";
+//     saveButton.style.marginTop = "10px";
+//     saveButton.style.marginLeft = "10px";
+//     saveButton.style.padding = "10px 20px";
+//     saveButton.style.backgroundColor = "#1a73e8";
+//     saveButton.style.color = "white";
+//     saveButton.style.border = "none";
+//     saveButton.style.borderRadius = "4px";
+//     saveButton.style.cursor = "pointer";
+//     saveButton.style.fontSize = "14px";
+//     saveButton.style.fontWeight = "500";
+//     saveButton.style.transition = "background-color 0.2s";
+
+//     saveButton.onmouseover = () => {
+//         saveButton.style.backgroundColor = "#1557b0";
+//     };
+
+//     saveButton.onmouseout = () => {
+//         saveButton.style.backgroundColor = "#1a73e8";
+//     };
+
+//     // Status Messages
+//     const createStatusMessage = (text, color) => {
+//         const message = document.createElement("div");
+//         message.textContent = text;
+//         message.style.display = "none";
+//         message.style.color = color;
+//         message.style.marginTop = "10px";
+//         message.style.fontSize = "14px";
+//         message.style.padding = "10px";
+//         message.style.borderRadius = "4px";
+//         message.style.backgroundColor = `${color}15`;
+//         return message;
+//     };
+
+//     const loadingIndicator = createStatusMessage("Saving changes...", "#1a73e8");
+//     const successMessage = createStatusMessage("Changes saved successfully!", "#28a745");
+//     const errorMessage = createStatusMessage("Error saving changes. Please try again.", "#d93025");
+
+//     // Save API Call
+//     saveButton.onclick = async () => {
+//         saveButton.style.display = "none";
+//         loadingIndicator.style.display = "block";
+//         successMessage.style.display = "none";
+//         errorMessage.style.display = "none";
+
+//         const jwtToken = localStorage.getItem('jwtToken');
+        
+//         try {
+//             const response = await fetch("https://rn39s8o0ua.execute-api.us-east-2.amazonaws.com/default/", {
+//                 method: "POST",
+//                 headers: {
+//                     "Content-Type": "application/json",
+//                     "Authorization": `Bearer ${jwtToken}`
+//                 },
+//                 body: JSON.stringify({ urls: state.tableData })
+//             });
+
+//             if (!response.ok) throw new Error("API Error");
+
+//             loadingIndicator.style.display = "none";
+//             successMessage.style.display = "block";
+//             saveButton.style.display = "block";
+            
+//             // Hide success message after 3 seconds
+//             setTimeout(() => {
+//                 successMessage.style.display = "none";
+//             }, 3000);
+//         } catch (error) {
+//             loadingIndicator.style.display = "none";
+//             saveButton.style.display = "block";
+//             errorMessage.style.display = "block";
+//         }
+//     };
+
+//     // Button Container
+//     const buttonContainer = document.createElement("div");
+//     buttonContainer.style.display = "flex";
+//     buttonContainer.style.gap = "10px";
+//     buttonContainer.style.marginTop = "20px";
+
+//     updateTable();
+//     tableWrapper.appendChild(table);
+    
+//     buttonContainer.appendChild(addRowButton);
+//     buttonContainer.appendChild(saveButton);
+    
+//     tableContainer.appendChild(title);
+//     tableContainer.appendChild(tableWrapper);
+//     tableContainer.appendChild(buttonContainer);
+//     tableContainer.appendChild(loadingIndicator);
+//     tableContainer.appendChild(successMessage);
+//     tableContainer.appendChild(errorMessage);
+
+//     return tableContainer;
+// };
+function createTablePage() {
     const tableContainer = document.createElement("div");
     tableContainer.style.display = "flex";
     tableContainer.style.flexDirection = "column";
-    tableContainer.style.width = "100%";
+    tableContainer.style.width = "100%"; 
     tableContainer.style.height = "100vh";
     tableContainer.style.padding = "20px";
     tableContainer.style.boxSizing = "border-box";
@@ -1274,7 +1535,9 @@ const createTablePage = () => {
     tableContainer.appendChild(errorMessage);
 
     return tableContainer;
-};
+}
+
+
 
 
 
@@ -1352,32 +1615,57 @@ const createSettingsPage = () => {
 //             break;
 //     }
 // };
-const renderPage = (pageName) => {
-    state.currentPage = pageName;
-    const mainContent = document.getElementById('main-content');
-    mainContent.innerHTML = '';
+// const renderPage = (pageName) => {
+//     state.currentPage = pageName;
+//     const mainContent = document.getElementById('main-content');
+//     mainContent.innerHTML = '';
     
-    let newPage;
+//     let newPage;
     
-    switch(pageName) {
-        case 'home':
-            newPage = createHomePage();
-            break;
-        case 'table':
-            newPage = createTablePage();
-            break;
-        case 'settings':
-            newPage = createSettingsPage();
-            break;
-    }
+//     switch(pageName) {
+//         case 'home':
+//             newPage = createHomePage();
+//             break;
+//         case 'table':
+//             newPage = createTablePage();
+//             break;
+//         case 'settings':
+//             newPage = createSettingsPage();
+//             break;
+//     }
 
-    if (newPage) {
-        mainContent.appendChild(newPage);
-        updateUI(); // Обновляем UI после рендера
-    }
-};
+//     if (newPage) {
+//         mainContent.appendChild(newPage);
+//         updateUI(); // Обновляем UI после рендера
+//     }
+// };
 
+//
+// ===============================
+// Функция для переключения страниц
+// ===============================
+function renderPage(pageName) {
+  const mainContent = document.getElementById("main-content");
+  mainContent.innerHTML = ""; // Очистка предыдущего контента
 
+  let page;
+  switch (pageName) {
+    case "home":
+      page = createHomePage();
+      break;
+    case "table":
+      page = createTablePage();
+      break;
+    case "settings":
+      page = createSettingsPage();
+      break;
+    default:
+      page = document.createElement("div");
+      page.textContent = "Page not found.";
+  }
+  mainContent.appendChild(page);
+  updateUI(); // Обновляем UI после рендера
+}
 
 
 
