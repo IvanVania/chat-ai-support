@@ -398,53 +398,100 @@ function createMainContent() {
 
 
 // Создание модального окна загрузки (ГЛОБАЛЬНО, ДОБАВЛЯТЬ ОДИН РАЗ)
-function createLoadingModal() {
-    const loadingModal = document.createElement("div");
-    loadingModal.id = "loading-modal";
-    loadingModal.style.display = "none";
-    loadingModal.style.position = "fixed";
-    loadingModal.style.top = "0";
-    loadingModal.style.left = "0";
-    loadingModal.style.width = "100%";
-    loadingModal.style.height = "100%";
-    loadingModal.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
-    loadingModal.style.zIndex = "2000";
+// function createLoadingModal() {
+//     const loadingModal = document.createElement("div");
+//     loadingModal.id = "loading-modal";
+//     loadingModal.style.display = "none";
+//     loadingModal.style.position = "fixed";
+//     loadingModal.style.top = "0";
+//     loadingModal.style.left = "0";
+//     loadingModal.style.width = "100%";
+//     loadingModal.style.height = "100%";
+//     loadingModal.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+//     loadingModal.style.zIndex = "2000";
+//     loadingModal.style.display = "flex";
+//     loadingModal.style.justifyContent = "center";
+//     loadingModal.style.alignItems = "center";
+
+//     const loadingContainer = document.createElement("div");
+//     loadingContainer.style.width = "80px";
+//     loadingContainer.style.height = "80px";
+//     loadingContainer.style.borderRadius = "50%";
+//     loadingContainer.style.border = "6px solid rgba(255, 255, 255, 0.3)";
+//     loadingContainer.style.borderTop = "6px solid white";
+//     loadingContainer.style.animation = "spin 1s linear infinite";
+
+//     loadingModal.appendChild(loadingContainer);
+//     document.body.appendChild(loadingModal);
+
+//     const styleTag = document.createElement("style");
+//     styleTag.textContent = `
+//         @keyframes spin {
+//             0% { transform: rotate(0deg); }
+//             100% { transform: rotate(360deg); }
+//         }`;
+//     document.head.appendChild(styleTag);
+
+//     function showLoadingModal() {
+//         loadingModal.style.display = "flex";
+//     }
+
+//     function hideLoadingModal() {
+//         loadingModal.style.display = "none";
+//     }
+
+//     return {
+//         show: showLoadingModal,
+//         hide: hideLoadingModal
+//     };
+// }
+
+
+// Создание модального окна загрузки (ГЛОБАЛЬНО, ДОБАВЛЯТЬ ОДИН РАЗ)
+const loadingModal = document.createElement("div");
+loadingModal.id = "loading-modal";
+loadingModal.style.display = "none";
+loadingModal.style.position = "fixed";
+loadingModal.style.top = "0";
+loadingModal.style.left = "0";
+loadingModal.style.width = "100%";
+loadingModal.style.height = "100%";
+loadingModal.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+loadingModal.style.zIndex = "2000";
+loadingModal.style.display = "flex";
+loadingModal.style.justifyContent = "center";
+loadingModal.style.alignItems = "center";
+
+// Внутренний контейнер с анимацией загрузки
+const loadingContainer = document.createElement("div");
+loadingContainer.style.width = "80px";
+loadingContainer.style.height = "80px";
+loadingContainer.style.borderRadius = "50%";
+loadingContainer.style.border = "6px solid rgba(255, 255, 255, 0.3)";
+loadingContainer.style.borderTop = "6px solid white";
+loadingContainer.style.animation = "spin 1s linear infinite";
+
+// Добавляем контейнер внутрь модального окна
+loadingModal.appendChild(loadingContainer);
+document.body.appendChild(loadingModal);
+
+// CSS-анимация кручения (добавить в <style> или через JS)
+const styleTag = document.createElement("style");
+styleTag.textContent = `
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}`;
+document.head.appendChild(styleTag);
+
+// Функции управления модальным окном загрузки
+const showLoadingModal = () => {
     loadingModal.style.display = "flex";
-    loadingModal.style.justifyContent = "center";
-    loadingModal.style.alignItems = "center";
+};
 
-    const loadingContainer = document.createElement("div");
-    loadingContainer.style.width = "80px";
-    loadingContainer.style.height = "80px";
-    loadingContainer.style.borderRadius = "50%";
-    loadingContainer.style.border = "6px solid rgba(255, 255, 255, 0.3)";
-    loadingContainer.style.borderTop = "6px solid white";
-    loadingContainer.style.animation = "spin 1s linear infinite";
-
-    loadingModal.appendChild(loadingContainer);
-    document.body.appendChild(loadingModal);
-
-    const styleTag = document.createElement("style");
-    styleTag.textContent = `
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }`;
-    document.head.appendChild(styleTag);
-
-    function showLoadingModal() {
-        loadingModal.style.display = "flex";
-    }
-
-    function hideLoadingModal() {
-        loadingModal.style.display = "none";
-    }
-
-    return {
-        show: showLoadingModal,
-        hide: hideLoadingModal
-    };
-}
+const hideLoadingModal = () => {
+    loadingModal.style.display = "none";
+};
 
 
 
