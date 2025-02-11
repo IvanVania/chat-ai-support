@@ -1390,6 +1390,64 @@ const renderPage = (pageName) => {
 
 
 
+// ===============================
+// Компонент: Глобальный индикатор загрузки
+// ===============================
+function createGlobalLoadingIndicator() {
+  const container = document.createElement("div");
+  container.style.position = "fixed";
+  container.style.top = "0";
+  container.style.left = "0";
+  container.style.width = "100%";
+  container.style.height = "5px";
+  container.style.zIndex = "10000";
+  container.style.overflow = "hidden";
+  container.style.backgroundColor = "rgba(0,0,0,0.1)";
+  container.style.display = "none"; // По умолчанию скрыт
+
+  const bar = document.createElement("div");
+  bar.style.height = "100%";
+  bar.style.width = "30%";         // Исходная ширина анимированного блока
+  bar.style.position = "absolute";
+  bar.style.left = "-30%";         // Стартовая позиция за пределами экрана слева
+  bar.style.backgroundImage = "linear-gradient(90deg, #3498db, #9b59b6)";
+  bar.style.boxShadow = "0 0 10px rgba(52,152,219,0.5)";
+  bar.style.borderRadius = "2px";
+  bar.style.animation = "slide 1.5s ease-in-out infinite";
+
+  container.appendChild(bar);
+
+  // Добавляем ключевые кадры анимации
+  const style = document.createElement("style");
+  style.innerHTML = `
+    @keyframes slide {
+      0% {
+        left: -30%;
+        width: 30%;
+      }
+      50% {
+        left: 35%;
+        width: 30%;
+      }
+      100% {
+        left: 100%;
+        width: 30%;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Методы управления индикатором
+  container.startLoading = function() {
+    container.style.display = "block";
+  };
+
+  container.stopLoading = function() {
+    container.style.display = "none";
+  };
+
+  return container;
+}
 
 
 
@@ -1399,17 +1457,28 @@ const renderPage = (pageName) => {
 
 
 
+
+
+
+
+
+
+// ===============================
+// Инициализация приложения
+// ===============================
 
 // Initialize app
-const initializeApp = () => {
-    document.body.style.margin = "0";
-    document.body.style.padding = "0";
-    document.body.style.fontFamily = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    document.body.style.minHeight = "100vh";
-    document.body.style.display = "flex";
+function initializeApp() {
+    // document.body.style.margin = "0";
+    // document.body.style.padding = "0";
+    // document.body.style.fontFamily = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    // document.body.style.minHeight = "100vh";
+    // document.body.style.display = "flex";
     
     const sidebar = createSidebar();
     const mainContent = createMainContent();
+    const globalLoadingIndicator = createGlobalLoadingIndicator();
+    window.globalLoadingIndicator = globalLoadingIndicator;
     
     document.body.appendChild(sidebar);
     document.body.appendChild(mainContent);
@@ -1418,7 +1487,21 @@ const initializeApp = () => {
     renderPage('home');
 
     setTimeout(updateUI, 0);
-};
+
+      //test - loading
+  window.globalLoadingIndicator.startLoading();
+}
+
+
+
+
+
+
+
+
+
+
+
 
 // Start the app when DOM is loaded
 document.addEventListener("DOMContentLoaded", initializeApp);
