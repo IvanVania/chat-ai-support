@@ -362,7 +362,7 @@ function getLogoutSvg() {
 
 
 // Create main content area
-const createMainContent = () => {
+function createMainContent() {
     const mainContent = document.createElement("div");
     mainContent.id = "main-content";
     mainContent.style.marginLeft = "64px";
@@ -373,8 +373,7 @@ const createMainContent = () => {
     mainContent.style.backgroundColor = "#ffffff";
     mainContent.style.padding = "24px 32px";
     return mainContent;
-};
-
+}
 
 
 
@@ -399,50 +398,67 @@ const createMainContent = () => {
 
 
 // Создание модального окна загрузки (ГЛОБАЛЬНО, ДОБАВЛЯТЬ ОДИН РАЗ)
-const loadingModal = document.createElement("div");
-loadingModal.id = "loading-modal";
-loadingModal.style.display = "none";
-loadingModal.style.position = "fixed";
-loadingModal.style.top = "0";
-loadingModal.style.left = "0";
-loadingModal.style.width = "100%";
-loadingModal.style.height = "100%";
-loadingModal.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
-loadingModal.style.zIndex = "2000";
-loadingModal.style.display = "flex";
-loadingModal.style.justifyContent = "center";
-loadingModal.style.alignItems = "center";
+function createLoadingModal() {
+    const loadingModal = createModalContainer();
+    const loadingContainer = createSpinnerContainer();
+    const styleTag = createSpinnerAnimation();
+    
+    loadingModal.appendChild(loadingContainer);
+    document.body.appendChild(loadingModal);
+    document.head.appendChild(styleTag);
+    
+    return {
+        show: () => showLoadingModal(loadingModal),
+        hide: () => hideLoadingModal(loadingModal)
+    };
+}
 
-// Внутренний контейнер с анимацией загрузки
-const loadingContainer = document.createElement("div");
-loadingContainer.style.width = "80px";
-loadingContainer.style.height = "80px";
-loadingContainer.style.borderRadius = "50%";
-loadingContainer.style.border = "6px solid rgba(255, 255, 255, 0.3)";
-loadingContainer.style.borderTop = "6px solid white";
-loadingContainer.style.animation = "spin 1s linear infinite";
+function createModalContainer() {
+    const modal = document.createElement("div");
+    modal.id = "loading-modal";
+    modal.style.display = "none";
+    modal.style.position = "fixed";
+    modal.style.top = "0";
+    modal.style.left = "0";
+    modal.style.width = "100%";
+    modal.style.height = "100%";
+    modal.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+    modal.style.zIndex = "2000";
+    modal.style.display = "flex";
+    modal.style.justifyContent = "center";
+    modal.style.alignItems = "center";
+    return modal;
+}
 
-// Добавляем контейнер внутрь модального окна
-loadingModal.appendChild(loadingContainer);
-document.body.appendChild(loadingModal);
+function createSpinnerContainer() {
+    const spinner = document.createElement("div");
+    spinner.style.width = "80px";
+    spinner.style.height = "80px";
+    spinner.style.borderRadius = "50%";
+    spinner.style.border = "6px solid rgba(255, 255, 255, 0.3)";
+    spinner.style.borderTop = "6px solid white";
+    spinner.style.animation = "spin 1s linear infinite";
+    return spinner;
+}
 
-// CSS-анимация кручения (добавить в <style> или через JS)
-const styleTag = document.createElement("style");
-styleTag.textContent = `
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}`;
-document.head.appendChild(styleTag);
+function createSpinnerAnimation() {
+    const styleTag = document.createElement("style");
+    styleTag.textContent = `
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    `;
+    return styleTag;
+}
 
-// Функции управления модальным окном загрузки
-const showLoadingModal = () => {
-    loadingModal.style.display = "flex";
-};
+function showLoadingModal(modal) {
+    modal.style.display = "flex";
+}
 
-const hideLoadingModal = () => {
-    loadingModal.style.display = "none";
-};
+function hideLoadingModal(modal) {
+    modal.style.display = "none";
+}
 
 
 
@@ -466,7 +482,7 @@ const hideLoadingModal = () => {
 
 
 // HOME PAGE
-const createNavbar = () => {
+function createNavbar() {
     const navbar = document.createElement("nav");
     navbar.style.padding = "1rem 2rem";
     navbar.style.backgroundColor = "white";
@@ -475,7 +491,16 @@ const createNavbar = () => {
     navbar.style.justifyContent = "space-between";
     navbar.style.alignItems = "center";
 
-    // Логотип + подписка
+    const logoContainer = createLogoSection();
+    const rightContainer = createRightContainer();
+
+    navbar.appendChild(logoContainer);
+    navbar.appendChild(rightContainer);
+
+    return navbar;
+}
+
+function createLogoSection() {
     const logoContainer = document.createElement("div");
     logoContainer.style.display = "flex";
     logoContainer.style.alignItems = "center";
@@ -487,9 +512,15 @@ const createNavbar = () => {
     logo.style.fontWeight = "bold";
     logo.style.color = "#1f2937";
 
-    logoContainer.appendChild(logo);
+    const subscriptionBlock = createSubscriptionBlock();
 
-    // Создаем блок подписки, но не заполняем его (updateUI сделает это)
+    logoContainer.appendChild(logo);
+    logoContainer.appendChild(subscriptionBlock);
+
+    return logoContainer;
+}
+
+function createSubscriptionBlock() {
     const subscriptionBlock = document.createElement("div");
     subscriptionBlock.id = "subscription-block";
     subscriptionBlock.style.fontSize = "0.875rem";
@@ -499,15 +530,26 @@ const createNavbar = () => {
     subscriptionBlock.style.padding = "4px 12px";
     subscriptionBlock.style.borderRadius = "8px";
     subscriptionBlock.style.boxShadow = "0 2px 4px rgba(79, 70, 229, 0.2)";
-    subscriptionBlock.style.display = "none"; // Скрываем, пока не будет данных
+    subscriptionBlock.style.display = "none";
+    return subscriptionBlock;
+}
 
-    logoContainer.appendChild(subscriptionBlock);
-
+function createRightContainer() {
     const rightContainer = document.createElement("div");
     rightContainer.style.display = "flex";
     rightContainer.style.alignItems = "center";
     rightContainer.style.gap = "1rem";
 
+    const pricingButton = createPricingButton();
+    const userSection = createUserSection();
+
+    rightContainer.appendChild(pricingButton);
+    rightContainer.appendChild(userSection);
+
+    return rightContainer;
+}
+
+function createPricingButton() {
     const pricingButton = document.createElement("button");
     pricingButton.textContent = "Subscription management";
     pricingButton.style.padding = "0.5rem 1rem";
@@ -521,7 +563,10 @@ const createNavbar = () => {
         document.body.appendChild(modal);
         modal.style.display = "block";
     };
+    return pricingButton;
+}
 
+function createUserSection() {
     const userSection = document.createElement("div");
     userSection.style.display = "flex";
     userSection.style.alignItems = "center";
@@ -539,21 +584,16 @@ const createNavbar = () => {
 
     const userEmail = document.createElement("span");
     userEmail.id = "user-email";
-    userEmail.textContent = ""; // Данные обновятся через updateUI()
+    userEmail.textContent = "";
     userEmail.style.fontSize = "1rem";
     userEmail.style.color = "#4b5563";
     userEmail.style.minWidth = "150px";
 
     userSection.appendChild(userAvatar);
     userSection.appendChild(userEmail);
-    rightContainer.appendChild(pricingButton);
-    rightContainer.appendChild(userSection);
 
-    navbar.appendChild(logoContainer);
-    navbar.appendChild(rightContainer);
-
-    return navbar;
-};
+    return userSection;
+}
 
 
 
@@ -1349,14 +1389,3 @@ const initializeApp = () => {
 
 // Start the app when DOM is loaded
 document.addEventListener("DOMContentLoaded", initializeApp);
-
-
-
-
-
-
-
-
-
-
-
